@@ -124,6 +124,17 @@ Bütün kişi, yer ve kurumlar **kurgusaldır**. Böylece model ezberinden cevap
 | phi3.5-3.8b | **10%** | 2.00 | 48% | 20% | 9.6 | 0.0000 | 50 |
 | qwen2.5-7b | **22%** | 1.66 | 4% | 2% | 4.3 | 0.0000 | 50 |
 
+### Ek (Task 4 · 05): tekrar kararsızlığı
+
+Aya Expanse 8B ve Llama 3.2 3B, aynı 20 soruyu (dengeli örneklem, tohum 42) **sıcaklık 0.7** ile 3'er kez çözdü (`SICAKLIK=0.7 python3 scripts/kos.py api --tekrar 3 --orneklem 20`).
+
+| model | deneme 1 / 2 / 3 doğru | sonucu değişen soru | kararsızlık |
+|---|---|---|---|
+| aya-expanse-8b | 13 / 13 / 13 (20 üzerinden) | 7 | %35 |
+| llama3.2-3b | 9 / 11 / 11 | 13 | %65 |
+
+Aya'nın toplam skoru üç denemede de aynı (13/20), ama **hangi** soruları doğru yaptığı 7 soruda değişiyor. Tek bir koşunun skoru sabit görünse bile soru düzeyinde sonuç şansa bağlı. Bu yüzden ana sonuçlar sıcaklık 0 ile alındı ve tek koşu, tek ölçüm olarak okunmamalı.
+
 ![model × kategori](grafikler/1_model_kategori.png)
 ![doğruluk vs maliyet](grafikler/2_maliyet_dogruluk.png)
 ![insan vs AI](grafikler/3_insan_ai.png)
