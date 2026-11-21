@@ -1,7 +1,7 @@
 """sonuclar/puanli.csv'den grafikler üretir → grafikler/*.png
 
   1_model_kategori.png   model × kategori doğruluk (gruplu çubuk)
-  2_maliyet_dogruluk.png doğruluk ve doğru cevap başına maliyet tek grafikte (Task 4 · 04)
+  2_maliyet_dogruluk.png doğruluk ve doğru cevap başına maliyet tek grafikte
   3_insan_ai.png         insan vs AI sorularında doğruluk
   4_halusinasyon.png     uydurma sayı / isim oranı
 

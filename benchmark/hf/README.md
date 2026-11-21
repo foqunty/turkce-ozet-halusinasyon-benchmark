@@ -42,7 +42,7 @@ Akıcı bir özet her zaman doğru bir özet değildir. Bu set, Türkçe metinde
 | `dogru_cevap` | `;` ile ayrılmış 3 kritik bilgi |
 | `puanlama` | `kontrol_listesi` |
 
-Biçim, [nexa-lab-ai/nexa-bench](https://github.com/nexa-lab-ai/nexa-bench) ile aynıdır.
+12 sütunlu CSV biçimi kullanılır.
 
 ## Dağılım
 
@@ -65,4 +65,4 @@ CC BY-NC 4.0. Küçük bir set (≈150 soru), tek bir istem ve sıcaklık 0 ile 
 
 ## Atıf
 
-Sedat Çoban, NEXA Fellowship Week 4, 2025.
+Sedat Çoban, 2025.

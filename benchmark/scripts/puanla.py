@@ -170,7 +170,7 @@ def main():
     md.append(tablo("Zorluğa göre doğruluk", ilk, "zorluk", modeller))
     md.append(tablo("İnsan vs AI soruları", ilk, "kaynak", modeller))
 
-    # Tekrar (Task 4 · 05): aynı soru aynı modele birden çok kez sorulduysa
+    # Tekrar: aynı soru aynı modele birden çok kez sorulduysa
     tekrar = collections.defaultdict(set)
     for r in satirlar:
         tekrar[(r["model"], r["soru_id"])].add(int(r["dogru_mu"]))

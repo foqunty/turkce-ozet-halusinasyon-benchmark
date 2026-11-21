@@ -7,10 +7,10 @@ Modeller modeller.json'da tanımlı. Üç yol:
 
 Örnekler:
   python scripts/kos.py api --modeller hepsi
-  python scripts/kos.py api --modeller qwen-yerel --orneklem 30          # Task 6: 30 soru
-  python scripts/kos.py api --modeller sonnet-5.5 --tekrar 3 --orneklem 20  # Task 4 · 05
+  python scripts/kos.py api --modeller qwen-yerel --orneklem 30          # 30 soruluk dengeli örneklem
+  python scripts/kos.py api --modeller sonnet-5.5 --tekrar 3 --orneklem 20  # tekrar kararsızlığı
   python scripts/kos.py manuel --model "gemini-4-carbon-web" --orneklem 30
-  python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20           # Task 4 · 03
+  python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20           # hakem model
 
 Aynı (soru, model, deneme) zaten varsa atlanır: yarıda kalırsa tekrar çalıştır, kaldığı yerden devam eder.
 """

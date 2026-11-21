@@ -2,7 +2,6 @@
 
 > LLM'ler Türkçe bir paragrafı özetlerken **kritik bilgileri (sayı, tarih, isim) koruyor mu, yoksa uyduruyor mu?**
 
-NEXA Fellowship · Week 4 · Sedat Çoban
 Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık.
 **HF dataset:** `https://huggingface.co/datasets/<hf-kullanici>/turkce-ozet-halusinasyon` *(erişim istekli)*
 
@@ -124,7 +123,7 @@ Bütün kişi, yer ve kurumlar **kurgusaldır**. Böylece model ezberinden cevap
 | phi3.5-3.8b | **10%** | 2.00 | 48% | 20% | 9.6 | 0.0000 | 50 |
 | qwen2.5-7b | **22%** | 1.66 | 4% | 2% | 4.3 | 0.0000 | 50 |
 
-### Ek (Task 4 · 05): tekrar kararsızlığı
+### Ek: tekrar kararsızlığı
 
 Aya Expanse 8B ve Llama 3.2 3B, aynı 20 soruyu (dengeli örneklem, tohum 42) **sıcaklık 0.7** ile 3'er kez çözdü (`SICAKLIK=0.7 python3 scripts/kos.py api --tekrar 3 --orneklem 20`).
 

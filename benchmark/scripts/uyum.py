@@ -1,4 +1,4 @@
-"""Task 4 · 03: hakem modelin puanı ile senin puanın ne kadar uyuşuyor?
+"""Hakem modelin puanı ile senin puanın ne kadar uyuşuyor?
 
 Önce: python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20
 Sonra sonuclar/hakem.csv'de 'insan_puani' sütununu (0/1/2) kendin doldur ve bunu çalıştır.

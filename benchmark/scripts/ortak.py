@@ -12,12 +12,12 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 SONUC = ROOT / "sonuclar"
 
-# nexa-bench (sorular/_ornek.csv) ile birebir aynı sütunlar:
+# Soru dosyası sütunları:
 # aynı dosya hem bu repoda hem ortak repoda doğrulanabilir.
 SORU_COLS = ["id", "tur", "alan", "kategori", "zorluk", "dil", "kaynak",
              "soru", "dogru_cevap", "puanlama", "tolerans", "not"]
 
-# Week 4 PDF'teki sonuclar.csv sütunları + sonda ek bilgi sütunları.
+# Sonuç dosyası sütunları (sonda ek bilgi sütunları).
 SONUC_COLS = ["soru_id", "model", "cevap", "dogru_mu", "sure_sn", "tahmini_maliyet", "not",
               "deneme", "tarih", "erisim", "girdi_token", "cikti_token"]
 

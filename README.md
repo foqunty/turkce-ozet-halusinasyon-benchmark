@@ -1,6 +1,8 @@
-# NEXA Fellowship · Week 4
+# Türkçe Özet + Halüsinasyon Benchmark'ı
 
-**Türkçe özet + halüsinasyon benchmark'ı.** Modeller Türkçe bir paragrafı özetlerken sayıyı, tarihi ve ismi koruyor mu, yoksa uyduruyor mu?
+LLM'ler Türkçe bir paragrafı özetlerken **sayıyı, tarihi ve ismi koruyor mu, yoksa uyduruyor mu?**
+
+Her soru, içinde 3 kritik bilgi (sayı, tarih, isim) olan bir Türkçe paragraf. Özet ancak üç bilgiyi de koruyor ve kaynakta olmayan hiçbir rakam ya da isim içermiyorsa doğru sayılıyor.
 
 | model | doğru (50) |
 |---|---|
@@ -15,10 +17,6 @@
 | Gemma 2 9B | 9 |
 | Llama 3.1 8B | 0 |
 
-Ayrıntılar, yöntem, grafikler ve yorum: **[benchmark/README.md](benchmark/README.md)**
+Yöntem, grafikler, ezber tuzağı deneyi ve yorum: **[benchmark/README.md](benchmark/README.md)**
 
-- `benchmark/`: puanlayıcı, model koşucu, sonuçlar, grafikler
-- `notlar/`: görev notları (makale A3, alignment-handbook, yerel model, nexa-bench)
-- `PLAN.md`: haftalık plan ve teslim listesi
-
-Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), GitHub'da yok.
+Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), bu repoda yok.

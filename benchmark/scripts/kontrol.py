@@ -1,6 +1,6 @@
-"""Kendi soru setini Week 4 kurallarına göre denetler.
+"""Soru setini kurallara göre denetler.
 
-  - nexa-bench ile aynı 12 sütun
+  - 12 sütunlu ortak biçim
   - en az 100 insan, 40–80 AI sorusu
   - en az 3 kategori, 3 zorluk; sorularin en az %20'si zorluk 3
   - her dogru_cevap tam 3 kritik bilgi (';' ile), ve her bilgi paragrafta gerçekten geçiyor

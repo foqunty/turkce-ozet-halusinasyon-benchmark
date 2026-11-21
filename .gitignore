@@ -2,3 +2,8 @@
 __pycache__/
 .venv/
 .env
+# kişisel plan ve notlar (yerelde kalır)
+PLAN.md
+notlar/
+# testler gizli soru setine dayanıyor ve özet örnekleri içeriyor
+benchmark/scripts/test_puanla.py
