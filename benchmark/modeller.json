@@ -1,0 +1,104 @@
+[
+ {
+  "ad": "fable-5.2",
+  "saglayici": "openrouter",
+  "model_id": "anthropic/claude-fable-5.2",
+  "firma": "Anthropic"
+ },
+ {
+  "ad": "opus-5.5",
+  "saglayici": "openrouter",
+  "model_id": "anthropic/claude-opus-5.5",
+  "firma": "Anthropic"
+ },
+ {
+  "ad": "sonnet-5.5",
+  "saglayici": "openrouter",
+  "model_id": "anthropic/claude-sonnet-5.5",
+  "firma": "Anthropic"
+ },
+ {
+  "ad": "haiku-5.5",
+  "saglayici": "openrouter",
+  "model_id": "anthropic/claude-haiku-5.5",
+  "firma": "Anthropic"
+ },
+ {
+  "ad": "gpt-6.2-astra",
+  "saglayici": "openrouter",
+  "model_id": "openai/gpt-6.2-astra",
+  "firma": "OpenAI"
+ },
+ {
+  "ad": "gpt-6.1-luna",
+  "saglayici": "openrouter",
+  "model_id": "openai/gpt-6.1-luna",
+  "firma": "OpenAI"
+ },
+ {
+  "ad": "gemini-4-carbon",
+  "saglayici": "openrouter",
+  "model_id": "google/gemini-4-carbon",
+  "firma": "Google"
+ },
+ {
+  "ad": "gemini-4-argon",
+  "saglayici": "openrouter",
+  "model_id": "google/gemini-4-argon",
+  "firma": "Google"
+ },
+ {
+  "ad": "qwen3.8-flash",
+  "saglayici": "openrouter",
+  "model_id": "qwen/qwen3.8-flash-next",
+  "firma": "Açık ağırlık"
+ },
+ {
+  "ad": "kimi-k3.1-pro",
+  "saglayici": "openrouter",
+  "model_id": "moonshotai/kimi-k3.1-pro",
+  "firma": "Açık ağırlık"
+ },
+ {
+  "ad": "qwen2.5-7b",
+  "saglayici": "ollama",
+  "model_id": "qwen2.5:7b",
+  "firma": "Alibaba (açık ağırlık)"
+ },
+ {
+  "ad": "llama3.1-8b",
+  "saglayici": "ollama",
+  "model_id": "llama3.1:8b",
+  "firma": "Meta (açık ağırlık)"
+ },
+ {
+  "ad": "gemma2-9b",
+  "saglayici": "ollama",
+  "model_id": "gemma2:9b",
+  "firma": "Google (açık ağırlık)"
+ },
+ {
+  "ad": "mistral-7b",
+  "saglayici": "ollama",
+  "model_id": "mistral:7b",
+  "firma": "Mistral AI (açık ağırlık)"
+ },
+ {
+  "ad": "phi3.5-3.8b",
+  "saglayici": "ollama",
+  "model_id": "phi3.5",
+  "firma": "Microsoft (açık ağırlık)"
+ },
+ {
+  "ad": "aya-expanse-8b",
+  "saglayici": "ollama",
+  "model_id": "aya-expanse:8b",
+  "firma": "Cohere (açık ağırlık, çok dilli)"
+ },
+ {
+  "ad": "llama3.2-3b",
+  "saglayici": "ollama",
+  "model_id": "llama3.2:3b",
+  "firma": "Meta (açık ağırlık)"
+ }
+]
