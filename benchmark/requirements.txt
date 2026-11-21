@@ -1,0 +1,2 @@
+# Sadece grafik.py için. Diğer betikler standart kütüphaneyle çalışır.
+matplotlib>=3.8

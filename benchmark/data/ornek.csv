@@ -1,0 +1,3 @@
+id,tur,alan,kategori,zorluk,dil,kaynak,soru,dogru_cevap,puanlama,tolerans,not
+ornek-001,metin,özet,haber,1,tr,insan,"Kurgusal Akçay Belediyesi, ilçenin ilk kreşini 4 Mart 2025'te açtı. Kreşte 60 çocuk için yer bulunuyor. Belediye Başkanı Gönül Ertaş, ikinci kreşin gelecek yıl açılacağını söyledi. Kreşin yapımı yaklaşık on ay sürdü.",4 Mart 2025; 60; Gönül Ertaş,kontrol_listesi,,biçim örneği · gerçek soru değil
+ornek-002,metin,özet,spor,3,tr,insan,"Kurgusal Akçayspor'un maçı sahada 1-1 bitti, ancak federasyon rakibin cezalı oyuncu oynattığına karar vererek maçı 3-0 Akçayspor lehine tescil etti. Karar 9 Nisan 2025'te açıklandı. Kurul başkanı Orçun Talay kararın kesin olduğunu söyledi.",3-0; 9 Nisan 2025; Orçun Talay,kontrol_listesi,,TUZAK: saha skoru vs tescil

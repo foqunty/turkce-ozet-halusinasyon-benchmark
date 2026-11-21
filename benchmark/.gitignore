@@ -1,0 +1,15 @@
+# Gizli set: soruları ve cevap anahtarını GitHub'a koyma (HF gated dataset'te)
+data/*.csv
+!data/ornek.csv
+# Ham cevaplar paragrafların bir kısmını tekrar edebilir: yalnızca puanli/özet paylaşılır
+sonuclar/sonuclar*.csv
+sonuclar/istemler_*.md
+sonuclar/hakem.csv
+.env
+__pycache__/
+.venv/
+# puanli*.csv ve ezber.json model cevaplarını içerir (cevaplar gizli paragrafları tekrar eder) → yalnızca ozet*.md paylaşılır
+sonuclar/puanli*.csv
+sonuclar/ezber.json
+# Vikipedi deney setinin metinleri ve değiştirilmiş bilgiler betiğin içinde → gizli
+scripts/vikipedi_seti.py
