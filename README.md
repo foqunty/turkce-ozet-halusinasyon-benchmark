@@ -1,5 +1,7 @@
 # Türkçe Özet + Halüsinasyon Benchmark'ı
 
+**Türkçe** · [English](README.en.md)
+
 LLM'ler Türkçe bir paragrafı özetlerken **sayıyı, tarihi ve ismi koruyor mu, yoksa uyduruyor mu?**
 
 Her soru, içinde 3 kritik bilgi (sayı, tarih, isim) olan bir Türkçe paragraf. Özet ancak üç bilgiyi de koruyor ve kaynakta olmayan hiçbir rakam ya da isim içermiyorsa doğru sayılıyor.

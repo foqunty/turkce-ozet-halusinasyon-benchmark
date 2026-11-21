@@ -1,5 +1,7 @@
 # Türkçe Özet + Halüsinasyon Benchmark'ı
 
+**Türkçe** · [English](README.en.md)
+
 > LLM'ler Türkçe bir paragrafı özetlerken **kritik bilgileri (sayı, tarih, isim) koruyor mu, yoksa uyduruyor mu?**
 
 Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık.
@@ -102,7 +104,7 @@ Bütün kişi, yer ve kurumlar **kurgusaldır**. Böylece model ezberinden cevap
 
 ## Sonuçlar
 
-*İlk koşu · 21 Kasım 2025 · 50 AI sorusu · istem v1. Claude modelleri Claude Code alt ajanlarıyla, açık modeller Ollama ile (Apple M4, 16 GB, sıcaklık 0) koşuldu. Açık modeller: Qwen 2.5 7B, Llama 3.1 8B, Llama 3.2 3B, Gemma 2 9B, Mistral 7B, Phi-3.5, Aya Expanse 8B. ChatGPT henüz eklenmedi.*
+*İlk koşu · 21 Kasım 2026 · 50 AI sorusu · istem v1. Claude modelleri Claude Code alt ajanlarıyla, açık modeller Ollama ile (Apple M4, 16 GB, sıcaklık 0) koşuldu. Açık modeller: Qwen 2.5 7B, Llama 3.1 8B, Llama 3.2 3B, Gemma 2 9B, Mistral 7B, Phi-3.5, Aya Expanse 8B. ChatGPT henüz eklenmedi.*
 | model | doğruluk | olgu (3 üzerinden) | uydurma sayı | uydurma isim | sn/soru | $ toplam | n |
 |---|---|---|---|---|---|---|---|
 | aya-expanse-8b | **66%** | 2.62 | 0% | 0% | 7.0 | 0.0000 | 50 |
