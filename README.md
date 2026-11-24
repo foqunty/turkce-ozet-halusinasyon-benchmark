@@ -19,6 +19,8 @@ Her soru, içinde 3 kritik bilgi (sayı, tarih, isim) olan bir Türkçe paragraf
 | Gemma 2 9B | 9 |
 | Llama 3.1 8B | 0 |
 
+![Karşılaştırma tablosu](benchmark/grafikler/5_karsilastirma.png)
+
 ## Modele ne gönderildi?
 
 Her modele kelimesi kelimesine **aynı istem** gitti (istem `v1`). `{paragraf}` yerine her seferinde o sorunun metni yazıldı:

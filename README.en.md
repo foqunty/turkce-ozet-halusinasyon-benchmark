@@ -19,6 +19,8 @@ Each question is a Turkish paragraph with 3 critical facts (a number, a date, a 
 | Gemma 2 9B | 9 |
 | Llama 3.1 8B | 0 |
 
+![Comparison table](benchmark/grafikler/5_karsilastirma_en.png)
+
 ## What was sent to the model?
 
 Every model got **the exact same prompt** (prompt `v1`). `{paragraf}` was replaced with the text of each question:

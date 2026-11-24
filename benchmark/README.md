@@ -191,6 +191,7 @@ Aya Expanse 8B ve Llama 3.2 3B, aynı 20 soruyu (dengeli örneklem, tohum 42) **
 
 Aya'nın toplam skoru üç denemede de aynı (13/20), ama **hangi** soruları doğru yaptığı 7 soruda değişiyor. Tek bir koşunun skoru sabit görünse bile soru düzeyinde sonuç şansa bağlı. Bu yüzden ana sonuçlar sıcaklık 0 ile alındı ve tek koşu, tek ölçüm olarak okunmamalı.
 
+![Karşılaştırma tablosu](grafikler/5_karsilastirma.png)
 ![model × kategori](grafikler/1_model_kategori.png)
 ![doğruluk vs maliyet](grafikler/2_maliyet_dogruluk.png)
 ![insan vs AI](grafikler/3_insan_ai.png)
@@ -237,6 +238,7 @@ scripts/ortak.py        istem, CSV biçimi, Türkçe normalleştirme
 scripts/kos.py          modelleri koşar (openrouter / ollama / manuel / hakem)
 scripts/puanla.py       kodla puanlama + özet tablolar
 scripts/grafik.py       grafikler
+scripts/tablo.py        bütün ölçümler tek karşılaştırma tablosunda
 scripts/kontrol.py      soru seti kurallarını denetler
 scripts/uyum.py         hakem model ile insan puanının uyumu
 modeller.json           model listesi

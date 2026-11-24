@@ -196,6 +196,7 @@ Aya Expanse 8B and Llama 3.2 3B answered the same 20 questions (balanced sample,
 
 Aya's total score is the same in all three runs (13/20), but **which** questions it gets right changes on 7 questions. Even when a single run's score looks stable, the result per question depends on chance. That is why the main results use temperature 0, and a single run should not be read as a final measurement.
 
+![Comparison table](grafikler/5_karsilastirma_en.png)
 ![model × category](grafikler/1_model_kategori.png)
 ![accuracy vs cost](grafikler/2_maliyet_dogruluk.png)
 ![human vs AI](grafikler/3_insan_ai.png)
@@ -242,6 +243,7 @@ scripts/ortak.py        prompt, CSV format, Turkish normalization
 scripts/kos.py          runs the models (openrouter / ollama / manual / judge)
 scripts/puanla.py       scoring by code + summary tables
 scripts/grafik.py       charts
+scripts/tablo.py        all metrics in one comparison table
 scripts/kontrol.py      checks the question set rules
 scripts/uyum.py         agreement between judge model and human scores
 modeller.json           model list
