@@ -4,7 +4,7 @@
 
 > When an LLM summarizes a Turkish paragraph, **does it keep the critical facts (number, date, name), or does it make them up?**
 
-The questions are hidden (Hugging Face gated dataset); the scores and the code are public. 50 of the 100 human questions were added to a shared public benchmark; scores on the still-hidden part are reported separately.
+The questions are hidden (Hugging Face gated dataset); the scores and the code are public. 50 of the 100 human questions were added to a shared public benchmark; scores on the still-hidden part are reported separately. There are two versions: **version 1** has 150 questions, **version 2** adds 100 ÖSYM-themed questions for 250 ([below](#version-2-250-questions-with-the-ösym-themed-set)).
 **HF dataset:** [huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon) *(gated, manual approval)*
 
 ---
@@ -145,6 +145,37 @@ Breakdowns by category and difficulty: [`sonuclar/ozet.md`](sonuclar/ozet.md).
 
 The two human halves give similar results (6 points apart on average for open models), so the split is balanced. For models added later, the main comparison should be the "hidden 100" column.
 
+### Version 2: 250 questions (with the ÖSYM-themed set)
+
+Version 1 (the 150 questions above) stays as it is. Version 2 adds **100 ÖSYM-themed questions that I wrote**. The paragraphs are fictional and use the same format as the main set (3 critical facts: number, date, name). Their themes come from 2024 YKS-TYT Turkish and 2012 KPSS General Ability reading questions: 20 exam questions, 5 paragraphs each. No exam text was copied, only the topic. These 100 questions are hidden too; the exam question each paragraph comes from is recorded.
+
+*250 questions (200 human + 50 AI) · same prompt v1 · 11 models · 26 November 2026*
+
+| # | model | version 2 (250) | main set (150) | ÖSYM-themed (100) | fabricated number (250) |
+|---|---|---|---|---|---|
+| 1 | Claude Opus 5.5 | **100%** | 100% | 100% | 0% |
+| 2 | Claude Sonnet 5.5 | **100%** | 100% | 100% | 0% |
+| 3 | Gemini 4 Neon | **100%** | 100% | 100% | 0% |
+| 4 | Claude Haiku 5.5 | **99%** | 98% | 100% | 0% |
+| 5 | Aya Expanse 8B | **80%** | 77% | 83% | 1% |
+| 6 | Mistral 7B | **69%** | 71% | 66% | 2% |
+| 7 | Qwen 2.5 7B | **59%** | 53% | 68% | 0% |
+| 8 | Llama 3.2 3B | **55%** | 59% | 50% | 0% |
+| 9 | Gemma 2 9B | **43%** | 34% | 57% | 1% |
+| 10 | Phi-3.5 3.8B | **33%** | 39% | 25% | 41% |
+| 11 | Llama 3.1 8B | **8%** | 6% | 10% | 18% |
+
+Full tables: [`sonuclar/ozet_250.md`](sonuclar/ozet_250.md) (250 questions, including the per-set breakdown) and [`sonuclar/ozet_osym.md`](sonuclar/ozet_osym.md) (only the 100 ÖSYM-themed questions).
+
+What it shows:
+
+- **The ranking barely changed.** The top four and the bottom two stay in place. Qwen and Llama 3.2 swap places.
+- **The ÖSYM-themed set is as hard as the human questions of the main set.** Open models average 51% on it and 55% on the main set's human questions. Paragraph length is the same too (285 / 282 characters). So the new set confirms the main set.
+- **The difficulty label did not separate in this set.** Open models average 54% / 50% / 51% at difficulty 1/2/3. The distractor numbers did not trip the models as much as expected.
+- **KPSS-themed paragraphs are a bit harder:** 46% for open models, 56% for YKS-themed ones.
+- **Same error type:** open models leave out a fact in 45% of summaries. Fabrication is again concentrated in Phi-3.5 and Llama 3.1.
+- The top four models scored 100% here too, so the test is still saturated for them.
+
 ### Which was harder: human or AI questions?
 
 **AI-written questions were harder.** Open models average 55% on human questions and 35% on AI questions. Seven models did better on the human set. Claude Opus, Sonnet and Gemini 4 Neon scored 100% on both, and Mistral 7B is the exception, doing better on the AI set (69% / 74%).
@@ -225,6 +256,9 @@ python scripts/test_ornek.py
 # extras
 SICAKLIK=0.7 python scripts/kos.py api --tekrar 3 --orneklem 20   # repeat / instability
 python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20 && python scripts/uyum.py
+
+# version 2: main set + ÖSYM-themed set together (250 questions)
+SORU_DESENI="sorular*.csv,deney_osym.csv" CIKTI_EK=_250 python scripts/puanla.py   # → sonuclar/ozet_250.md
 ```
 
 All scripts use only the standard library, except `grafik.py` and `tablo.py`, which need matplotlib.

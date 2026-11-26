@@ -4,7 +4,7 @@
 
 > LLM'ler Türkçe bir paragrafı özetlerken **kritik bilgileri (sayı, tarih, isim) koruyor mu, yoksa uyduruyor mu?**
 
-Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık. 100 insan sorusunun 50'si ortak açık bir benchmark'a eklendi; gizli kalan kısımdaki skorlar ayrıca veriliyor.
+Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık. 100 insan sorusunun 50'si ortak açık bir benchmark'a eklendi; gizli kalan kısımdaki skorlar ayrıca veriliyor. İki sürüm var: **sürüm 1** 150 soru, **sürüm 2** buna 100 ÖSYM temalı soru eklenmiş 250 soru ([aşağıda](#sürüm-2-250-soru-ösym-temalı-ek-setle)).
 **HF dataset:** [huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon) *(erişim istekli, elle onay)*
 
 ---
@@ -141,6 +141,37 @@ Kategori ve zorluk kırılımları: [`sonuclar/ozet.md`](sonuclar/ozet.md).
 
 İki insan yarısı birbirine yakın sonuç veriyor (açık modellerde ortalama fark 6 puan), yani bölme dengeli. Bundan sonra gelen modeller için asıl karşılaştırma "gizli 100" sütunu olmalı.
 
+### Sürüm 2: 250 soru (ÖSYM temalı ek setle)
+
+Sürüm 1 (yukarıdaki 150 soru) olduğu gibi duruyor. Sürüm 2'de buna, benim yazdığım **100 ÖSYM temalı soru** eklendi. Paragraflar kurgusal ve ana setle aynı biçimde (3 kritik bilgi: sayı, tarih, isim). Temaları 2024 YKS-TYT Türkçe ve 2012 KPSS Genel Yetenek paragraf sorularından alındı: 20 sınav sorusu, her birinden 5 paragraf. Sınav metni kopyalanmadı, sadece konu alındı. Bu 100 soru da gizli; hangi paragrafın hangi sınav sorusundan türediği kayıtlı.
+
+*250 soru (200 insan + 50 AI) · aynı istem v1 · 11 model · 26 Kasım 2026*
+
+| # | model | sürüm 2 (250) | ana set (150) | ÖSYM temalı (100) | uydurma sayı (250) |
+|---|---|---|---|---|---|
+| 1 | Claude Opus 5.5 | **100%** | 100% | 100% | 0% |
+| 2 | Claude Sonnet 5.5 | **100%** | 100% | 100% | 0% |
+| 3 | Gemini 4 Neon | **100%** | 100% | 100% | 0% |
+| 4 | Claude Haiku 5.5 | **99%** | 98% | 100% | 0% |
+| 5 | Aya Expanse 8B | **80%** | 77% | 83% | 1% |
+| 6 | Mistral 7B | **69%** | 71% | 66% | 2% |
+| 7 | Qwen 2.5 7B | **59%** | 53% | 68% | 0% |
+| 8 | Llama 3.2 3B | **55%** | 59% | 50% | 0% |
+| 9 | Gemma 2 9B | **43%** | 34% | 57% | 1% |
+| 10 | Phi-3.5 3.8B | **33%** | 39% | 25% | 41% |
+| 11 | Llama 3.1 8B | **8%** | 6% | 10% | 18% |
+
+Tam tablolar: [`sonuclar/ozet_250.md`](sonuclar/ozet_250.md) (250 soru, sete göre kırılım dahil) ve [`sonuclar/ozet_osym.md`](sonuclar/ozet_osym.md) (sadece ÖSYM temalı 100).
+
+Ne gösteriyor:
+
+- **Sıralama neredeyse değişmedi.** İlk dört ve son iki model aynı yerde. Qwen ile Llama 3.2 yer değiştirdi.
+- **ÖSYM temalı set, ana setteki insan sorularıyla aynı zorlukta.** Açık modellerin ortalaması ÖSYM setinde %51, ana setin insan sorularında %55. Paragraf uzunluğu da aynı (285 / 282 karakter). Yani yeni set ana setin güvenilirliğini doğruluyor.
+- **Zorluk etiketi bu sette ayrışmadı.** Açık modellerin ortalaması zorluk 1/2/3'te %54 / %50 / %51. Çeldirici sayılar modelleri beklendiği kadar şaşırtmadı.
+- **KPSS temalı paragraflar biraz daha zor:** açık modellerde %46, YKS temalılarda %56.
+- **Hata türü aynı:** açık modeller özetlerin %45'inde bilgi atlıyor. Uydurma yine Phi-3.5 ve Llama 3.1'de yoğun.
+- En iyi dört model bu sette de %100 aldı, test onlar için hâlâ doymuş.
+
 ### Hangisi daha zor çıktı: insan mı, AI mı?
 
 **AI yazımı sorular daha zor çıktı.** Açık modellerin ortalaması insan sorularında %55, AI sorularında %35. Yedi model insan setinde daha iyi yaptı. Claude Opus, Sonnet ve Gemini 4 Neon iki sette de %100 aldı, Mistral 7B ise tersine AI setinde daha iyi (69% / 74%).
@@ -221,6 +252,9 @@ python scripts/test_ornek.py
 # ekler
 SICAKLIK=0.7 python scripts/kos.py api --tekrar 3 --orneklem 20   # tekrar / kararsızlık
 python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20 && python scripts/uyum.py
+
+# sürüm 2: ana set + ÖSYM temalı set birlikte (250 soru)
+SORU_DESENI="sorular*.csv,deney_osym.csv" CIKTI_EK=_250 python scripts/puanla.py   # → sonuclar/ozet_250.md
 ```
 
 Betiklerin hepsi standart kütüphaneyle çalışır. Sadece `grafik.py` ve `tablo.py` matplotlib ister.

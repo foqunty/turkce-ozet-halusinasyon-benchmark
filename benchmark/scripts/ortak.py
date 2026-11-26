@@ -52,13 +52,15 @@ def yaz(path, rows, cols):
 
 def sorulari_yukle(desen=None):
     """data/ altındaki soru dosyalarını birleştirir (ornek.csv hariç).
-    Ayrı deney seti için: SORU_DESENI=deney_vikipedi.csv"""
+    Ayrı deney seti için: SORU_DESENI=deney_vikipedi.csv
+    Birden çok set için virgülle: SORU_DESENI=sorular*.csv,deney_osym.csv"""
     desen = desen or os.environ.get("SORU_DESENI", "sorular*.csv")
     rows = []
-    for p in sorted(DATA.glob(desen)):
-        if p.name.startswith("ornek"):
-            continue
-        rows += oku(p)
+    for d in desen.split(","):            # birden çok set: SORU_DESENI=sorular*.csv,deney_osym.csv
+        for p in sorted(DATA.glob(d.strip())):
+            if p.name.startswith("ornek"):
+                continue
+            rows += oku(p)
     return rows
 
 

@@ -13,3 +13,6 @@ sonuclar/puanli*.csv
 sonuclar/ezber.json
 # Vikipedi deney setinin metinleri ve değiştirilmiş bilgiler betiğin içinde → gizli
 scripts/vikipedi_seti.py
+
+# ÖSYM temalı ek setin ham dosyaları (gizli)
+data/osym_kaynak/

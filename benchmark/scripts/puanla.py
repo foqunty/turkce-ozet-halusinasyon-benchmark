@@ -169,6 +169,10 @@ def main():
     md.append(tablo("Kategoriye göre doğruluk", ilk, "kategori", modeller))
     md.append(tablo("Zorluğa göre doğruluk", ilk, "zorluk", modeller))
     md.append(tablo("İnsan vs AI soruları", ilk, "kaynak", modeller))
+    if any(r["soru_id"].startswith("A3-OS") for r in ilk):    # 250 soruluk sürüm
+        setli = [{**r, "set": "ÖSYM temalı" if r["soru_id"].startswith("A3-OS") else "ana set"}
+                 for r in ilk]
+        md.append(tablo("Sete göre doğruluk", setli, "set", modeller))
 
     # Tekrar: aynı soru aynı modele birden çok kez sorulduysa
     tekrar = collections.defaultdict(set)
