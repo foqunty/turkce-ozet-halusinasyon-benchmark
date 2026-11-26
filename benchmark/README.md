@@ -4,7 +4,7 @@
 
 > LLM'ler Türkçe bir paragrafı özetlerken **kritik bilgileri (sayı, tarih, isim) koruyor mu, yoksa uyduruyor mu?**
 
-Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık.
+Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık. 100 insan sorusunun 50'si ortak açık bir benchmark'a eklendi; gizli kalan kısımdaki skorlar ayrıca veriliyor.
 **HF dataset:** [huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon) *(erişim istekli, elle onay)*
 
 ---
@@ -96,7 +96,7 @@ Bütün kişi, yer ve kurumlar **kurgusaldır**. Böylece model ezberinden cevap
 - İstem `v1` ([`scripts/ortak.py`](scripts/ortak.py)), sistem istemi yok, örnek yok.
 - **Açık modeller:** Ollama ile yerelde (Apple M4, 16 GB). Her soru ayrı bir mesaj, sıcaklık 0, tohum 42.
 - **Claude modelleri:** Claude Code alt ajanları. Her ajan temiz bağlamla başladı, sadece istem dosyasını okudu, cevap anahtarını görmedi. Sıcaklık ayarlanamadı, süre ölçülmedi.
-- **Gemini 4 Neon:** gemini.google.com web arayüzünde her soru için yeni bir **geçici sohbet**. Sıcaklık ayarlanamadı. Her cevabın tek mesajlık bir sohbetten geldiği ve doğru paragrafa ait olduğu kodla kontrol edildi.
+- **Gemini 4 Neon:** gemini.google.com web arayüzünde her soru için yeni bir **geçici sohbet**. Sıcaklık ayarlanamadı. Her cevabın tek mesajlık bir sohbetten geldiği ve doğru paragrafa ait olduğu kodla kontrol edildi. Bir cevap kaydedilirken cümle ortasında kesildi (cevap tamamlanmadan alındı); o soru yeni bir geçici sohbette tekrar soruldu ve CSV'de not edildi. Süre web arayüzünde ölçüldü (gönderimden cevabın tamamlanmasına kadar).
 - Model sürümü, tarih ve erişim yolu her cevabın `not`, `tarih` ve `erisim` sütunlarında kayıtlı.
 
 ## Sonuçlar
@@ -109,21 +109,41 @@ Bütün kişi, yer ve kurumlar **kurgusaldır**. Böylece model ezberinden cevap
 |---|---|---|---|---|---|---|---|---|
 | 1 | Claude Opus 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
 | 2 | Claude Sonnet 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
-| 3 | Claude Haiku 5.5 | Anthropic | | **98%** | 100% | 94% | 2.98 | 0% |
-| 4 | Aya Expanse 8B | Cohere | ✓ | **77%** | 83% | 66% | 2.76 | 1% |
-| 5 | Mistral 7B | Mistral AI | ✓ | **71%** | 69% | 74% | 2.68 | 3% |
-| 6 | Llama 3.2 3B | Meta | ✓ | **59%** | 67% | 42% | 2.49 | 0% |
-| 7 | Qwen 2.5 7B | Alibaba | ✓ | **53%** | 68% | 22% | 2.35 | 1% |
-| 8 | Phi-3.5 3.8B | Microsoft | ✓ | **39%** | 46% | 24% | 2.55 | 45% |
-| 9 | Gemma 2 9B | Google | ✓ | **34%** | 42% | 18% | 2.09 | 2% |
-| 10 | Llama 3.1 8B | Meta | ✓ | **6%** | 9% | 0% | 0.97 | 27% |
-| – | Gemini 4 Neon | Google | | *koşu sürüyor* | | | | |
+| 3 | Gemini 4 Neon | Google | | **100%** | 100% | 100% | 3.00 | 0% |
+| 4 | Claude Haiku 5.5 | Anthropic | | **98%** | 100% | 94% | 2.98 | 0% |
+| 5 | Aya Expanse 8B | Cohere | ✓ | **77%** | 83% | 66% | 2.76 | 1% |
+| 6 | Mistral 7B | Mistral AI | ✓ | **71%** | 69% | 74% | 2.68 | 3% |
+| 7 | Llama 3.2 3B | Meta | ✓ | **59%** | 67% | 42% | 2.49 | 0% |
+| 8 | Qwen 2.5 7B | Alibaba | ✓ | **53%** | 68% | 22% | 2.35 | 1% |
+| 9 | Phi-3.5 3.8B | Microsoft | ✓ | **39%** | 46% | 24% | 2.55 | 45% |
+| 10 | Gemma 2 9B | Google | ✓ | **34%** | 42% | 18% | 2.09 | 2% |
+| 11 | Llama 3.1 8B | Meta | ✓ | **6%** | 9% | 0% | 0.97 | 27% |
 
 Kategori ve zorluk kırılımları: [`sonuclar/ozet.md`](sonuclar/ozet.md).
 
+### Açık alt küme ve gizli kalan sorular
+
+100 insan sorusunun 50'si (her kategoriden 10, zorluk 10/25/15) ortak açık bir benchmark reposuna eklendi: [nexa-lab-ai/nexa-bench](https://github.com/nexa-lab-ai/nexa-bench) (`sorular/foqunty.csv`, `foq-051`–`foq-100`). Bu sorular artık eğitim verisine sızabilir. Bu yüzden skorlar gizli kalan kısımda ayrıca veriliyor:
+
+| model | açık 50 (insan) | gizli 50 (insan) | gizli 50 (AI) | gizli 100 |
+|---|---|---|---|---|
+| Claude Opus 5.5 | 100% | 100% | 100% | **100%** |
+| Claude Sonnet 5.5 | 100% | 100% | 100% | **100%** |
+| Gemini 4 Neon | 100% | 100% | 100% | **100%** |
+| Claude Haiku 5.5 | 100% | 100% | 94% | **97%** |
+| Aya Expanse 8B | 86% | 80% | 66% | **73%** |
+| Mistral 7B | 70% | 68% | 74% | **71%** |
+| Llama 3.2 3B | 66% | 68% | 42% | **55%** |
+| Qwen 2.5 7B | 66% | 70% | 22% | **46%** |
+| Phi-3.5 3.8B | 38% | 54% | 24% | **39%** |
+| Gemma 2 9B | 38% | 46% | 18% | **32%** |
+| Llama 3.1 8B | 10% | 8% | 0% | **4%** |
+
+İki insan yarısı birbirine yakın sonuç veriyor (açık modellerde ortalama fark 6 puan), yani bölme dengeli. Bundan sonra gelen modeller için asıl karşılaştırma "gizli 100" sütunu olmalı.
+
 ### Hangisi daha zor çıktı: insan mı, AI mı?
 
-**AI yazımı sorular daha zor çıktı.** Açık modellerin ortalaması insan sorularında %55, AI sorularında %35. Yedi model insan setinde daha iyi yaptı. Claude Opus ve Sonnet iki sette de %100 aldı, Mistral 7B ise tersine AI setinde daha iyi (69% / 74%).
+**AI yazımı sorular daha zor çıktı.** Açık modellerin ortalaması insan sorularında %55, AI sorularında %35. Yedi model insan setinde daha iyi yaptı. Claude Opus, Sonnet ve Gemini 4 Neon iki sette de %100 aldı, Mistral 7B ise tersine AI setinde daha iyi (69% / 74%).
 
 Fark büyük ihtimalle yazarın kim olduğundan değil, **metnin yoğunluğundan** geliyor. AI paragrafları daha uzun (ortalama 320 / 282 karakter) ve daha kalabalık: paragraf başına 5,4 sayı ve 4,9 özel isim var, insan setinde 3,8 ve 2,5. Modeller iki sette de yaklaşık aynı uzunlukta özet yazıyor (23–33 kelime). Bu yüzden yoğun metinde aynı kelime bütçesine daha çok bilgi sığdırmaları gerekiyor ve bilgi atlıyorlar. Qwen 2.5 7B'nin bilgi atlama oranı AI setinde %78, insan setinde %32. Yani bu karşılaştırmada "kim yazdı" ile "metin ne kadar yoğun" birbirinden ayrılamıyor.
 
@@ -140,7 +160,7 @@ Bütün koşular ücretsiz: açık modeller yerelde, Claude ve Gemini abonelik a
 
 ### Deney: gerçek Vikipedi metinleri + ezber tuzağı
 
-25 KPSS konulu Türkçe Vikipedi metni (CC BY-SA 4.0) ve her birinin tek bilgisi değiştirilmiş hâli kullanıldı (`scripts/vikipedi_seti.py`, ezber analizi `scripts/ezber.py`). Değiştirilmiş metinde 10 modelin hiçbiri ezberdeki gerçek değeri yazmadı (ezber = 0). Hatalar ezberden değil, bilgi atlamaktan ve uydurmaktan geliyor. Sonuçlar: [`sonuclar/ozet_viki.md`](sonuclar/ozet_viki.md).
+25 KPSS konulu Türkçe Vikipedi metni (CC BY-SA 4.0) ve her birinin tek bilgisi değiştirilmiş hâli kullanıldı (`scripts/vikipedi_seti.py`, ezber analizi `scripts/ezber.py`). Değiştirilmiş metinde bu deneye katılan 10 modelin (Gemini hariç) hiçbiri ezberdeki gerçek değeri yazmadı (ezber = 0). Hatalar ezberden değil, bilgi atlamaktan ve uydurmaktan geliyor. Sonuçlar: [`sonuclar/ozet_viki.md`](sonuclar/ozet_viki.md).
 
 ### Ek: tekrar kararsızlığı
 
@@ -167,7 +187,7 @@ Hakemler birbiriyle uyuşuyor ama kodla ancak yarı yarıya uyuşuyor, çünkü 
 
 ## Yorum
 
-1. Claude Opus ve Sonnet 150 sorunun hepsini doğru yaptı, Haiku 147'sini. Bu test en iyi modeller için doymuş durumda. Onları ayırmak için daha sıkı bir istem ("en fazla 20 kelime") ya da daha uzun metinler gerekiyor.
+1. Claude Opus, Claude Sonnet ve Gemini 4 Neon 150 sorunun hepsini doğru yaptı, Haiku 147'sini. Bu test en iyi modeller için doymuş durumda. Onları ayırmak için daha sıkı bir istem ("en fazla 20 kelime") ya da daha uzun metinler gerekiyor.
 2. Açık modellerde en iyiler Aya Expanse 8B (%77) ve Mistral 7B (%71). Aya, Türkçe dahil 23 dil için eğitilmiş tek model ve fark muhtemelen buradan geliyor.
 3. Hatalar iki türe ayrılıyor. Qwen, Gemma, Aya ve Llama 3.2 bilgiyi **atlıyor** ama neredeyse hiç uydurmuyor. Phi-3.5 ve Llama 3.1 ise metinde olmayan sayı ve isim **uyduruyor**: Phi-3.5 özetlerinin %45'inde, Llama 3.1'in %27'sinde uydurma var.
 4. Model boyutu tek başına belirleyici değil. Llama 3.2 3B (%59), kendinden büyük Llama 3.1 8B'yi (%6) ve Gemma 2 9B'yi (%34) geçti.

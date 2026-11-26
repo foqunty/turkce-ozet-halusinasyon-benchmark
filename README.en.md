@@ -10,6 +10,7 @@ Each question is a Turkish paragraph with 3 critical facts (a number, a date, a 
 |---|---|---|---|
 | Claude Opus 5.5 | **100%** | 100% | 100% |
 | Claude Sonnet 5.5 | **100%** | 100% | 100% |
+| Gemini 4 Neon | **100%** | 100% | 100% |
 | Claude Haiku 5.5 | **98%** | 100% | 94% |
 | Aya Expanse 8B | **77%** | 83% | 66% |
 | Mistral 7B | **71%** | 69% | 74% |
@@ -18,9 +19,8 @@ Each question is a Turkish paragraph with 3 critical facts (a number, a date, a 
 | Phi-3.5 3.8B | **39%** | 46% | 24% |
 | Gemma 2 9B | **34%** | 42% | 18% |
 | Llama 3.1 8B | **6%** | 9% | 0% |
-| Gemini 4 Neon | *run in progress* | | |
 
-150 fictional paragraphs (100 human-written, 50 AI-written) · prompt v1 · open models via Ollama on an Apple M4, temperature 0. **AI-written questions turned out harder**: open models average 55% on human questions and 35% on AI questions.
+150 fictional paragraphs (100 human-written, 50 AI-written) · 11 models, 7 companies · prompt v1 · open models via Ollama on an Apple M4, temperature 0. Claude Opus, Claude Sonnet and Gemini 4 Neon got all 150 right. **AI-written questions turned out harder**: open models average 55% on human questions and 35% on AI questions.
 
 Hidden question set: [Hugging Face, gated](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon)
 
@@ -92,6 +92,6 @@ Related work (in Turkish):
 - [alignment-handbook review and a base vs instruct run](gorevler/task2_alignment_handbook.md) (SmolLM2-135M with lm-evaluation-harness)
 - [Local models vs cloud](gorevler/task6_yerel_model.md) (Ollama, Apple M4)
 
-The question set and answer key are kept hidden (so they do not leak into model training) and are not in this repo. Access: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
+The question set and answer key are kept hidden (so they do not leak into model training) and are not in this repo. 50 of the 100 human questions are public in [nexa-bench](https://github.com/nexa-lab-ai/nexa-bench); scores on the 100 still-hidden questions are in [benchmark/README.en.md](benchmark/README.en.md#public-subset-and-the-still-hidden-questions). Access: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
 
 License: code MIT, dataset CC BY-NC 4.0.

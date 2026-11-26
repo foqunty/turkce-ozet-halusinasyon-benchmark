@@ -81,7 +81,7 @@ SATIRLAR = [
      satir(lambda m: yuz([r for r in viki if r["soru_id"].startswith("vikd")], dogru, model=m)), pct, True),
     ("Kararlılık", "Stability", "Kararsızlık", "Instability", "sıcaklık 0.7, 3 deneme", "temperature 0.7, 3 runs",
      satir(lambda m: kararsiz.get(m)), pct, False),
-    ("Hız", "Speed", "Soru başına süre", "Time per question", "Apple M4, saniye", "Apple M4, seconds",
+    ("Hız", "Speed", "Soru başına süre", "Time per question", "yerel: Apple M4 · Gemini: web", "local: Apple M4 · Gemini: web",
      satir(sure), lambda v: f"{v:.1f} sn", False),
 ]
 

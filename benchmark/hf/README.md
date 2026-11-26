@@ -64,6 +64,7 @@ Bir özet ancak **3 bilginin üçü de doğru geçiyorsa ve kaynakta olmayan hi�
 |---|---|---|---|
 | Claude Opus 5.5 | 100% | 100% | 100% |
 | Claude Sonnet 5.5 | 100% | 100% | 100% |
+| Gemini 4 Neon | 100% | 100% | 100% |
 | Claude Haiku 5.5 | 100% | 94% | 98% |
 | Aya Expanse 8B | 83% | 66% | 77% |
 | Mistral 7B | 69% | 74% | 71% |
@@ -73,8 +74,12 @@ Bir özet ancak **3 bilginin üçü de doğru geçiyorsa ve kaynakta olmayan hi�
 | Gemma 2 9B | 42% | 18% | 34% |
 | Llama 3.1 8B | 9% | 0% | 6% |
 
-İstem v1, sıcaklık 0. Açık modeller Ollama ile Apple M4 16 GB üzerinde koşuldu. Ayrıntılı model × kategori tabloları ve grafikler GitHub reposunda.
+İstem v1. Açık modeller Ollama ile Apple M4 16 GB üzerinde sıcaklık 0'da; Claude ve Gemini abonelik arayüzlerinden koşuldu (sıcaklık ayarlanamadı). Ayrıntılı model × kategori tabloları ve grafikler GitHub reposunda.
 
+
+## Açık alt küme
+
+100 insan sorusunun 50'si (her kategoriden 10) ortak açık bir benchmark reposunda yayımlandı: [nexa-lab-ai/nexa-bench](https://github.com/nexa-lab-ai/nexa-bench) (`foq-051`–`foq-100`, her satırın `not` sütununda buradaki id). Kontaminasyondan arınmış karşılaştırma için kalan 100 soru (50 insan + 50 AI) kullanılmalı; bu kısımdaki skorlar GitHub README'sinde.
 
 ## Lisans ve sınırlamalar
 

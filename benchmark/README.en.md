@@ -4,7 +4,7 @@
 
 > When an LLM summarizes a Turkish paragraph, **does it keep the critical facts (number, date, name), or does it make them up?**
 
-The questions are hidden (Hugging Face gated dataset); the scores and the code are public.
+The questions are hidden (Hugging Face gated dataset); the scores and the code are public. 50 of the 100 human questions were added to a shared public benchmark; scores on the still-hidden part are reported separately.
 **HF dataset:** [huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon) *(gated, manual approval)*
 
 ---
@@ -100,7 +100,7 @@ All people, places and organizations are **fictional**, so a model cannot answer
 - Prompt `v1` ([`scripts/ortak.py`](scripts/ortak.py)), no system prompt, no examples.
 - **Open models:** local via Ollama (Apple M4, 16 GB). One message per question, temperature 0, seed 42.
 - **Claude models:** Claude Code subagents. Each agent started with a clean context, read only the prompt file and never saw the answer key. Temperature could not be set; time was not measured.
-- **Gemini 4 Neon:** a new **temporary chat** for every question in the gemini.google.com web UI. Temperature could not be set. Code checked that every answer came from a one-message chat and belongs to the right paragraph.
+- **Gemini 4 Neon:** a new **temporary chat** for every question in the gemini.google.com web UI. Temperature could not be set. Code checked that every answer came from a one-message chat and belongs to the right paragraph. One answer was captured mid-sentence (before it had finished); that question was asked again in a new temporary chat and this is noted in the CSV. Time was measured in the web UI (from sending to the finished answer).
 - Model version, date and access path are stored in the `not`, `tarih` and `erisim` columns of every answer.
 
 ## Results
@@ -113,21 +113,41 @@ All people, places and organizations are **fictional**, so a model cannot answer
 |---|---|---|---|---|---|---|---|---|
 | 1 | Claude Opus 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
 | 2 | Claude Sonnet 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
-| 3 | Claude Haiku 5.5 | Anthropic | | **98%** | 100% | 94% | 2.98 | 0% |
-| 4 | Aya Expanse 8B | Cohere | ✓ | **77%** | 83% | 66% | 2.76 | 1% |
-| 5 | Mistral 7B | Mistral AI | ✓ | **71%** | 69% | 74% | 2.68 | 3% |
-| 6 | Llama 3.2 3B | Meta | ✓ | **59%** | 67% | 42% | 2.49 | 0% |
-| 7 | Qwen 2.5 7B | Alibaba | ✓ | **53%** | 68% | 22% | 2.35 | 1% |
-| 8 | Phi-3.5 3.8B | Microsoft | ✓ | **39%** | 46% | 24% | 2.55 | 45% |
-| 9 | Gemma 2 9B | Google | ✓ | **34%** | 42% | 18% | 2.09 | 2% |
-| 10 | Llama 3.1 8B | Meta | ✓ | **6%** | 9% | 0% | 0.97 | 27% |
-| – | Gemini 4 Neon | Google | | *run in progress* | | | | |
+| 3 | Gemini 4 Neon | Google | | **100%** | 100% | 100% | 3.00 | 0% |
+| 4 | Claude Haiku 5.5 | Anthropic | | **98%** | 100% | 94% | 2.98 | 0% |
+| 5 | Aya Expanse 8B | Cohere | ✓ | **77%** | 83% | 66% | 2.76 | 1% |
+| 6 | Mistral 7B | Mistral AI | ✓ | **71%** | 69% | 74% | 2.68 | 3% |
+| 7 | Llama 3.2 3B | Meta | ✓ | **59%** | 67% | 42% | 2.49 | 0% |
+| 8 | Qwen 2.5 7B | Alibaba | ✓ | **53%** | 68% | 22% | 2.35 | 1% |
+| 9 | Phi-3.5 3.8B | Microsoft | ✓ | **39%** | 46% | 24% | 2.55 | 45% |
+| 10 | Gemma 2 9B | Google | ✓ | **34%** | 42% | 18% | 2.09 | 2% |
+| 11 | Llama 3.1 8B | Meta | ✓ | **6%** | 9% | 0% | 0.97 | 27% |
 
 Breakdowns by category and difficulty: [`sonuclar/ozet.md`](sonuclar/ozet.md).
 
+### Public subset and the still-hidden questions
+
+50 of the 100 human questions (10 per category, difficulty 10/25/15) were added to a shared public benchmark repo: [nexa-lab-ai/nexa-bench](https://github.com/nexa-lab-ai/nexa-bench) (`sorular/foqunty.csv`, `foq-051`–`foq-100`). These questions can now leak into training data, so scores on the still-hidden part are reported separately:
+
+| model | public 50 (human) | hidden 50 (human) | hidden 50 (AI) | hidden 100 |
+|---|---|---|---|---|
+| Claude Opus 5.5 | 100% | 100% | 100% | **100%** |
+| Claude Sonnet 5.5 | 100% | 100% | 100% | **100%** |
+| Gemini 4 Neon | 100% | 100% | 100% | **100%** |
+| Claude Haiku 5.5 | 100% | 100% | 94% | **97%** |
+| Aya Expanse 8B | 86% | 80% | 66% | **73%** |
+| Mistral 7B | 70% | 68% | 74% | **71%** |
+| Llama 3.2 3B | 66% | 68% | 42% | **55%** |
+| Qwen 2.5 7B | 66% | 70% | 22% | **46%** |
+| Phi-3.5 3.8B | 38% | 54% | 24% | **39%** |
+| Gemma 2 9B | 38% | 46% | 18% | **32%** |
+| Llama 3.1 8B | 10% | 8% | 0% | **4%** |
+
+The two human halves give similar results (6 points apart on average for open models), so the split is balanced. For models added later, the main comparison should be the "hidden 100" column.
+
 ### Which was harder: human or AI questions?
 
-**AI-written questions were harder.** Open models average 55% on human questions and 35% on AI questions. Seven models did better on the human set. Claude Opus and Sonnet scored 100% on both, and Mistral 7B is the exception, doing better on the AI set (69% / 74%).
+**AI-written questions were harder.** Open models average 55% on human questions and 35% on AI questions. Seven models did better on the human set. Claude Opus, Sonnet and Gemini 4 Neon scored 100% on both, and Mistral 7B is the exception, doing better on the AI set (69% / 74%).
 
 The gap most likely comes from **text density**, not from who wrote the text. AI paragraphs are longer (320 vs. 282 characters on average) and more crowded: 5.4 numbers and 4.9 proper names per paragraph, against 3.8 and 2.5 in the human set. Models write summaries of about the same length on both sets (23–33 words), so on dense text they have to fit more facts into the same word budget, and they drop facts. Qwen 2.5 7B drops at least one fact in 78% of AI questions and 32% of human questions. In this comparison, "who wrote it" and "how dense the text is" cannot be separated.
 
@@ -144,7 +164,7 @@ Every run was free: open models locally, Claude and Gemini through subscription 
 
 ### Experiment: real Wikipedia texts + memorization trap
 
-25 Turkish Wikipedia texts on exam topics (CC BY-SA 4.0), each also in a version with one fact changed (`scripts/vikipedi_seti.py`, analysis in `scripts/ezber.py`). On the altered texts, none of the 10 models wrote the memorized real value (memorization = 0). Errors come from dropping and inventing facts, not from memory. Results: [`sonuclar/ozet_viki.md`](sonuclar/ozet_viki.md).
+25 Turkish Wikipedia texts on exam topics (CC BY-SA 4.0), each also in a version with one fact changed (`scripts/vikipedi_seti.py`, analysis in `scripts/ezber.py`). On the altered texts, none of the 10 models in this experiment (Gemini was not included) wrote the memorized real value (memorization = 0). Errors come from dropping and inventing facts, not from memory. Results: [`sonuclar/ozet_viki.md`](sonuclar/ozet_viki.md).
 
 ### Extra: repeat instability
 
@@ -171,7 +191,7 @@ The judges agree with each other but only about half the time with the code, bec
 
 ## Interpretation
 
-1. Claude Opus and Sonnet got all 150 questions right, Haiku 147. The test is saturated for the best models. Telling them apart needs a stricter prompt ("at most 20 words") or longer texts.
+1. Claude Opus, Claude Sonnet and Gemini 4 Neon got all 150 questions right, Haiku 147. The test is saturated for the best models. Telling them apart needs a stricter prompt ("at most 20 words") or longer texts.
 2. Among open models, the best are Aya Expanse 8B (77%) and Mistral 7B (71%). Aya is the only model trained for 23 languages including Turkish, which likely explains the gap.
 3. Errors fall into two types. Qwen, Gemma, Aya and Llama 3.2 **drop** facts but almost never invent. Phi-3.5 and Llama 3.1 **invent** numbers and names that are not in the text: 45% of Phi-3.5's summaries and 27% of Llama 3.1's contain invented items.
 4. Model size alone does not decide. Llama 3.2 3B (59%) beat the larger Llama 3.1 8B (6%) and Gemma 2 9B (34%).

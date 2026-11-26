@@ -10,6 +10,7 @@ Her soru, içinde 3 kritik bilgi (sayı, tarih, isim) olan bir Türkçe paragraf
 |---|---|---|---|
 | Claude Opus 5.5 | **100%** | 100% | 100% |
 | Claude Sonnet 5.5 | **100%** | 100% | 100% |
+| Gemini 4 Neon | **100%** | 100% | 100% |
 | Claude Haiku 5.5 | **98%** | 100% | 94% |
 | Aya Expanse 8B | **77%** | 83% | 66% |
 | Mistral 7B | **71%** | 69% | 74% |
@@ -18,9 +19,8 @@ Her soru, içinde 3 kritik bilgi (sayı, tarih, isim) olan bir Türkçe paragraf
 | Phi-3.5 3.8B | **39%** | 46% | 24% |
 | Gemma 2 9B | **34%** | 42% | 18% |
 | Llama 3.1 8B | **6%** | 9% | 0% |
-| Gemini 4 Neon | *koşu sürüyor* | | |
 
-150 kurgusal paragraf (100 insan yazımı, 50 AI yazımı) · istem v1 · açık modeller Ollama ile Apple M4'te, sıcaklık 0. **AI yazımı sorular daha zor çıktı**: açık modellerin ortalaması insan sorularında %55, AI sorularında %35.
+150 kurgusal paragraf (100 insan yazımı, 50 AI yazımı) · 11 model, 7 firma · istem v1 · açık modeller Ollama ile Apple M4'te, sıcaklık 0. Claude Opus, Claude Sonnet ve Gemini 4 Neon 150 sorunun hepsini doğru yaptı. **AI yazımı sorular daha zor çıktı**: açık modellerin ortalaması insan sorularında %55, AI sorularında %35.
 
 Gizli soru seti: [Hugging Face, erişim istekli](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon)
 
@@ -88,6 +88,6 @@ Ek çalışmalar:
 - [alignment-handbook incelemesi ve base/instruct denemesi](gorevler/task2_alignment_handbook.md) (lm-evaluation-harness ile SmolLM2-135M)
 - [Yerel modeller ve bulut karşılaştırması](gorevler/task6_yerel_model.md) (Ollama, Apple M4)
 
-Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), bu repoda yok. Erişim için: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
+Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), bu repoda yok. 100 insan sorusunun 50'si [nexa-bench](https://github.com/nexa-lab-ai/nexa-bench)'te açık; gizli kalan 100 sorudaki skorlar [benchmark/README.md](benchmark/README.md#açık-alt-küme-ve-gizli-kalan-sorular)'de. Erişim için: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
 
 Lisans: kod MIT, veri seti CC BY-NC 4.0.
