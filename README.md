@@ -1,6 +1,6 @@
 # Türkçe Özet + Halüsinasyon Benchmark'ı
 
-**Türkçe** · [English](README.en.md)
+**Türkçe** · [English](README.en.md) · [![test](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark/actions/workflows/test.yml/badge.svg)](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark/actions/workflows/test.yml)
 
 LLM'ler Türkçe bir paragrafı özetlerken **sayıyı, tarihi ve ismi koruyor mu, yoksa uyduruyor mu?**
 

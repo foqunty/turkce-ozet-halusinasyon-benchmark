@@ -1,6 +1,6 @@
 # Turkish Summary + Hallucination Benchmark
 
-[Türkçe](README.md) · **English**
+[Türkçe](README.md) · **English** · [![test](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark/actions/workflows/test.yml/badge.svg)](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark/actions/workflows/test.yml)
 
 When an LLM summarizes a Turkish paragraph, **does it keep the number, the date and the name, or does it make them up?**
 

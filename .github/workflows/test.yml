@@ -1,0 +1,21 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scorer:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: benchmark
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scorer tests on the public example questions
+        run: python scripts/test_ornek.py
+      - name: Byte-compile all scripts
+        run: python -m py_compile scripts/*.py
