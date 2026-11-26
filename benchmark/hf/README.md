@@ -83,7 +83,7 @@ Bir özet ancak **3 bilginin üçü de doğru geçiyorsa ve kaynakta olmayan hi�
 
 ## Lisans ve sınırlamalar
 
-CC BY-NC 4.0. Küçük bir set (≈150 soru), tek bir istem ve sıcaklık 0 ile koşuldu. İsim kontrolü sezgiseldir. Ayrıntılar GitHub README'sinde.
+CC BY-NC 4.0. Küçük bir set (≈150 soru), tek bir istemle koşuldu (açık modeller sıcaklık 0'da). İsim kontrolü sezgiseldir. Ayrıntılar GitHub README'sinde.
 
 ## Atıf
 
