@@ -87,6 +87,10 @@ Length and style of the summary are not scored. The only thing measured is wheth
 
 Method, human vs AI comparison, charts, the memorization trap, the LLM-judge experiment and the interpretation: **[benchmark/README.en.md](benchmark/README.en.md)**
 
+Related work (in Turkish):
+- [alignment-handbook review and a base vs instruct run](gorevler/task2_alignment_handbook.md) (SmolLM2-135M with lm-evaluation-harness)
+- [Local models vs cloud](gorevler/task6_yerel_model.md) (Ollama, Apple M4)
+
 The question set and answer key are kept hidden (so they do not leak into model training) and are not in this repo. Access: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
 
 License: code MIT, dataset CC BY-NC 4.0.

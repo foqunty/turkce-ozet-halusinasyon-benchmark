@@ -83,6 +83,10 @@ Her paragraf şu şartları sağlıyor; [`scripts/kontrol.py`](benchmark/scripts
 
 Yöntem, insan/AI karşılaştırması, grafikler, ezber tuzağı, hakem modeli deneyi ve yorum: **[benchmark/README.md](benchmark/README.md)**
 
+Ek çalışmalar:
+- [alignment-handbook incelemesi ve base/instruct denemesi](gorevler/task2_alignment_handbook.md) (lm-evaluation-harness ile SmolLM2-135M)
+- [Yerel modeller ve bulut karşılaştırması](gorevler/task6_yerel_model.md) (Ollama, Apple M4)
+
 Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), bu repoda yok. Erişim için: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
 
 Lisans: kod MIT, veri seti CC BY-NC 4.0.
