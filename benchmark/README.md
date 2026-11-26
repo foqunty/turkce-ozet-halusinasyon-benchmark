@@ -223,7 +223,7 @@ scripts/puanla.py       kodla puanlama + özet tablolar
 scripts/grafik.py       grafikler
 scripts/tablo.py        bütün ölçümler tek karşılaştırma tablosunda
 scripts/kontrol.py      soru seti kurallarını denetler
-scripts/test_ornek.py   puanlayıcı testleri (herkese açık örneklerle, CI'da çalışır)
+scripts/test_ornek.py   puanlayıcı testleri (herkese açık örneklerle)
 scripts/uyum.py         hakem ile insan puanının uyumu
 scripts/hf_yukle.py     gizli seti gated HF dataset olarak yükler
 modeller.json           model listesi

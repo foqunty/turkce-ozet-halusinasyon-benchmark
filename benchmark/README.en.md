@@ -227,7 +227,7 @@ scripts/puanla.py       code-based scoring + summary tables
 scripts/grafik.py       charts
 scripts/tablo.py        all metrics in one comparison table
 scripts/kontrol.py      checks the question-set rules
-scripts/test_ornek.py   scorer tests on public examples (runs in CI)
+scripts/test_ornek.py   scorer tests on public examples
 scripts/uyum.py         judge vs human agreement
 scripts/hf_yukle.py     uploads the hidden set as a gated HF dataset
 modeller.json           model list
