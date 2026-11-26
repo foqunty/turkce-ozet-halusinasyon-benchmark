@@ -5,7 +5,7 @@
 > When an LLM summarizes a Turkish paragraph, **does it keep the critical facts (number, date, name), or does it make them up?**
 
 The questions are hidden (Hugging Face gated dataset); the scores and the code are public.
-**HF dataset:** `https://huggingface.co/datasets/<hf-user>/turkce-ozet-halusinasyon` *(access on request)*
+**HF dataset:** [huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon) *(gated, manual approval)*
 
 ---
 
@@ -23,7 +23,7 @@ Each question is a short Turkish paragraph with 3 critical facts: a number, a da
 | **invented number/date** | any number in the summary that is not in the source |
 | **invented name** | any capitalized proper noun mid-sentence that is not in the source |
 | **correct** | 3/3 facts **and** nothing invented |
-| **meaning drift** | 20 answers are graded by a judge model and by me → agreement rate |
+| **meaning drift** | 20 answers are graded by two separate judge models (Sonnet 5.5, Opus 5.5) without seeing each other → judge agreement and comparison with the code |
 
 Scoring is done by code from the raw output, not from the screen: [`scripts/puanla.py`](scripts/puanla.py).
 
@@ -71,7 +71,7 @@ Every paragraph meets these rules; [`scripts/kontrol.py`](scripts/kontrol.py) ch
 | The paragraph also has non-critical details (duration, place, a second number) | the model has to pick what is important; extra numbers also make invented ones harder to spot |
 | People, places and organizations are **fictional** | the model cannot answer from memory, only from the text (contamination guard) |
 | Difficulty 3 has a **trap**: a corrected number, two people with the same surname, a value that contradicts world knowledge, several dates, percent vs. percentage point | when "faithful to the text" and "general knowledge" clash, which one does the model choose? |
-| 3 categories (news, science, sports), 3 difficulty levels; at least 20% difficulty 3 | results should not depend on one type of text |
+| 5 categories in the human set, 3 in the AI set; 3 difficulty levels; at least 20% difficulty 3 | results should not depend on one type of text |
 
 ## What did we require from the summary? (scoring)
 
@@ -86,166 +86,150 @@ Length and style of the summary are not scored. The only thing measured is wheth
 
 ## Category and difficulty distribution
 
-| | difficulty 1 | difficulty 2 | difficulty 3 | total |
-|---|---|---|---|---|
-| news | | | | |
-| science | | | | |
-| sports | | | | |
-| **human** | | | | **≥100** |
-| **AI** (separate label) | 15 | 20 | 15 | **50** |
+| set | categories | level 1 | level 2 | level 3 | total |
+|---|---|---|---|---|---|
+| **human** (`kaynak=insan`) | nature and environment · culture and art · city and transport · education and observation · sports and daily life (20 each) | 20 | 50 | 30 | **100** |
+| **AI** (`kaynak=ai`, separate label) | news 17 · science 16 · sports 17 | 15 | 20 | 15 | **50** |
 
-**Difficulty 3** questions have a trap: a number corrected inside the text ("not 34 as first announced, but 43"), two people with the same surname, a value that contradicts world knowledge but is stated clearly in the text (water boiling at 91 °C at high altitude), several dates, or percent mixed up with percentage points.
+Both sets are 30% difficulty 3. **Level 2** paragraphs have distractors: a second number, a second date, or a non-critical name. **Level 3** paragraphs have a trap: a number corrected inside the text ("not 34, as first announced, but 43"), two people with the same surname, a value that contradicts world knowledge but is stated in the text (water boiling at 91 °C at high altitude), several dates, percent vs. percentage point.
 
-All people, places and organizations are **fictional**. The model cannot answer from memory, only from the text. This is also a guard against contamination.
+All people, places and organizations are **fictional**, so a model cannot answer from memory, only from the text. This is also a guard against contamination.
 
 ## Conditions (the same for every model)
 
-- Prompt `v1` ([`scripts/ortak.py`](scripts/ortak.py)), at most 400 tokens
-- Open models ran on this computer with Ollama: no system prompt, each question as a separate single message, temperature 0
-- Claude models ran through Claude Code subagents: the 50 prompts were given in one file and the model answered each one separately, but all in the same session; temperature could not be set
-- For models used through a web UI (ChatGPT): a new chat for each question, memory off
-- Model version, date and access route are in the `not`, `tarih` and `erisim` columns of `sonuclar.csv`
+- Prompt `v1` ([`scripts/ortak.py`](scripts/ortak.py)), no system prompt, no examples.
+- **Open models:** local via Ollama (Apple M4, 16 GB). One message per question, temperature 0, seed 42.
+- **Claude models:** Claude Code subagents. Each agent started with a clean context, read only the prompt file and never saw the answer key. Temperature could not be set; time was not measured.
+- **Gemini 4 Neon:** a new **temporary chat** for every question in the gemini.google.com web UI. Temperature could not be set. Code checked that every answer came from a one-message chat and belongs to the right paragraph.
+- Model version, date and access path are stored in the `not`, `tarih` and `erisim` columns of every answer.
 
 ## Results
 
-*First run · 21 November 2026 · 50 AI questions · prompt v1. Claude models ran through Claude Code subagents, open models with Ollama (Apple M4, 16 GB, temperature 0). Open models: Qwen 2.5 7B, Llama 3.1 8B, Llama 3.2 3B, Gemma 2 9B, Mistral 7B, Phi-3.5, Aya Expanse 8B. ChatGPT has not been added yet.*
+*150 questions (100 human + 50 AI) · prompt v1 · 21–26 November 2026. Scored by code from the raw output.*
 
-| model | accuracy | facts (out of 3) | invented numbers | invented names | s/question | $ total | n |
-|---|---|---|---|---|---|---|---|
-| aya-expanse-8b | **66%** | 2.62 | 0% | 0% | 7.0 | 0.0000 | 50 |
-| claude-haiku-5.5 | **94%** | 2.94 | 0% | 0% | – | 0.0000 | 50 |
-| claude-opus-5.5 | **100%** | 3.00 | 0% | 0% | – | 0.0000 | 50 |
-| claude-sonnet-5.5 | **100%** | 3.00 | 0% | 0% | – | 0.0000 | 50 |
-| gemma2-9b | **18%** | 1.88 | 0% | 0% | 6.3 | 0.0000 | 50 |
-| llama3.1-8b | **0%** | 0.78 | 46% | 22% | 3.9 | 0.0000 | 50 |
-| llama3.2-3b | **42%** | 2.26 | 0% | 0% | 3.0 | 0.0000 | 50 |
-| mistral-7b | **74%** | 2.72 | 4% | 2% | 10.8 | 0.0000 | 50 |
-| phi3.5-3.8b | **24%** | 2.32 | 48% | 46% | 10.7 | 0.0000 | 50 |
-| qwen2.5-7b | **22%** | 1.98 | 0% | 2% | 4.3 | 0.0000 | 50 |
+![Comparison table](grafikler/5_karsilastirma_en.png)
 
-### Accuracy by category
+| # | model | company | open weights | accuracy (150) | human (100) | AI (50) | facts / 3 | summaries with invented items |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Claude Opus 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
+| 2 | Claude Sonnet 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
+| 3 | Claude Haiku 5.5 | Anthropic | | **98%** | 100% | 94% | 2.98 | 0% |
+| 4 | Aya Expanse 8B | Cohere | ✓ | **77%** | 83% | 66% | 2.76 | 1% |
+| 5 | Mistral 7B | Mistral AI | ✓ | **71%** | 69% | 74% | 2.68 | 3% |
+| 6 | Llama 3.2 3B | Meta | ✓ | **59%** | 67% | 42% | 2.49 | 0% |
+| 7 | Qwen 2.5 7B | Alibaba | ✓ | **53%** | 68% | 22% | 2.35 | 1% |
+| 8 | Phi-3.5 3.8B | Microsoft | ✓ | **39%** | 46% | 24% | 2.55 | 45% |
+| 9 | Gemma 2 9B | Google | ✓ | **34%** | 42% | 18% | 2.09 | 2% |
+| 10 | Llama 3.1 8B | Meta | ✓ | **6%** | 9% | 0% | 0.97 | 27% |
+| – | Gemini 4 Neon | Google | | *run in progress* | | | | |
 
-| model | science | news | sports |
-|---|---|---|---|
-| aya-expanse-8b | 62% | 65% | 71% |
-| claude-haiku-5.5 | 100% | 88% | 94% |
-| claude-opus-5.5 | 100% | 100% | 100% |
-| claude-sonnet-5.5 | 100% | 100% | 100% |
-| gemma2-9b | 19% | 0% | 35% |
-| llama3.1-8b | 0% | 0% | 0% |
-| llama3.2-3b | 31% | 41% | 53% |
-| mistral-7b | 69% | 71% | 82% |
-| phi3.5-3.8b | 31% | 6% | 35% |
-| qwen2.5-7b | 31% | 18% | 18% |
+Breakdowns by category and difficulty: [`sonuclar/ozet.md`](sonuclar/ozet.md).
 
-### Accuracy by difficulty
+### Which was harder: human or AI questions?
 
-| model | 1 | 2 | 3 |
-|---|---|---|---|
-| aya-expanse-8b | 40% | 65% | 93% |
-| claude-haiku-5.5 | 93% | 90% | 100% |
-| claude-opus-5.5 | 100% | 100% | 100% |
-| claude-sonnet-5.5 | 100% | 100% | 100% |
-| gemma2-9b | 13% | 5% | 40% |
-| llama3.1-8b | 0% | 0% | 0% |
-| llama3.2-3b | 40% | 60% | 20% |
-| mistral-7b | 67% | 70% | 87% |
-| phi3.5-3.8b | 20% | 25% | 27% |
-| qwen2.5-7b | 7% | 15% | 47% |
+**AI-written questions were harder.** Open models average 55% on human questions and 35% on AI questions. Seven models did better on the human set. Claude Opus and Sonnet scored 100% on both, and Mistral 7B is the exception, doing better on the AI set (69% / 74%).
 
-### Human vs. AI questions
+The gap most likely comes from **text density**, not from who wrote the text. AI paragraphs are longer (320 vs. 282 characters on average) and more crowded: 5.4 numbers and 4.9 proper names per paragraph, against 3.8 and 2.5 in the human set. Models write summaries of about the same length on both sets (23–33 words), so on dense text they have to fit more facts into the same word budget, and they drop facts. Qwen 2.5 7B drops at least one fact in 78% of AI questions and 32% of human questions. In this comparison, "who wrote it" and "how dense the text is" cannot be separated.
 
-| model | ai |
-|---|---|
-| aya-expanse-8b | 66% |
-| claude-haiku-5.5 | 94% |
-| claude-opus-5.5 | 100% |
-| claude-sonnet-5.5 | 100% |
-| gemma2-9b | 18% |
-| llama3.1-8b | 0% |
-| llama3.2-3b | 42% |
-| mistral-7b | 74% |
-| phi3.5-3.8b | 24% |
-| qwen2.5-7b | 22% |
+![human vs AI](grafikler/3_insan_ai.png)
+![model × category, human](grafikler/1_model_kategori.png)
+![model × category, AI](grafikler/1b_model_kategori_ai.png)
+![hallucination](grafikler/4_halusinasyon.png)
+
+### Cost and time
+
+Every run was free: open models locally, Claude and Gemini through subscription UIs. So the chart shows **time per correct answer** instead of cost. Times for open models average two runs. The second run (human questions) ran alongside other work and was slower.
+
+![accuracy vs time](grafikler/2_maliyet_dogruluk.png)
 
 ### Experiment: real Wikipedia texts + memorization trap
 
-25 Turkish Wikipedia texts on KPSS (Turkish civil service exam) topics (CC BY-SA 4.0), plus a version of each with one fact changed (`data/deney_vikipedi.csv`, `scripts/vikipedi_seti.py`). Memorization analysis: `python3 scripts/ezber.py`. Result: none of the 10 models wrote the real, memorized value on the changed texts (memorization = 0); the errors were omissions and inventions.
-
-| model | accuracy | facts (out of 3) | invented numbers | invented names | s/question | $ total | n |
-|---|---|---|---|---|---|---|---|
-| aya-expanse-8b | **40%** | 2.18 | 0% | 4% | 7.5 | 0.0000 | 50 |
-| claude-haiku-5.5 | **74%** | 2.68 | 0% | 0% | – | 0.0000 | 50 |
-| claude-opus-5.5 | **100%** | 3.00 | 0% | 0% | – | 0.0000 | 50 |
-| claude-sonnet-5.5 | **92%** | 2.90 | 0% | 0% | – | 0.0000 | 50 |
-| gemma2-9b | **20%** | 1.64 | 0% | 6% | 7.2 | 0.0000 | 50 |
-| llama3.1-8b | **4%** | 0.62 | 28% | 14% | 4.1 | 0.0000 | 50 |
-| llama3.2-3b | **36%** | 2.06 | 0% | 4% | 3.5 | 0.0000 | 50 |
-| mistral-7b | **46%** | 2.42 | 0% | 8% | 14.6 | 0.0000 | 50 |
-| phi3.5-3.8b | **10%** | 2.00 | 48% | 20% | 9.6 | 0.0000 | 50 |
-| qwen2.5-7b | **22%** | 1.66 | 4% | 2% | 4.3 | 0.0000 | 50 |
+25 Turkish Wikipedia texts on exam topics (CC BY-SA 4.0), each also in a version with one fact changed (`scripts/vikipedi_seti.py`, analysis in `scripts/ezber.py`). On the altered texts, none of the 10 models wrote the memorized real value (memorization = 0). Errors come from dropping and inventing facts, not from memory. Results: [`sonuclar/ozet_viki.md`](sonuclar/ozet_viki.md).
 
 ### Extra: repeat instability
 
-Aya Expanse 8B and Llama 3.2 3B answered the same 20 questions (balanced sample, seed 42) 3 times each at **temperature 0.7** (`SICAKLIK=0.7 python3 scripts/kos.py api --tekrar 3 --orneklem 20`).
+Aya Expanse 8B and Llama 3.2 3B answered the same 20 questions (balanced sample, seed 42) 3 times each at **temperature 0.7**.
 
 | model | run 1 / 2 / 3 correct | questions whose result changed | instability |
 |---|---|---|---|
-| aya-expanse-8b | 13 / 13 / 13 (out of 20) | 7 | 35% |
-| llama3.2-3b | 9 / 11 / 11 | 13 | 65% |
+| Aya Expanse 8B | 13 / 13 / 13 (out of 20) | 7 | 35% |
+| Llama 3.2 3B | 9 / 11 / 11 | 13 | 65% |
 
-Aya's total score is the same in all three runs (13/20), but **which** questions it gets right changes on 7 questions. Even when a single run's score looks stable, the result per question depends on chance. That is why the main results use temperature 0, and a single run should not be read as a final measurement.
+Aya's total stays the same across all three runs, but **which** questions it gets right changes on 7 of them. This is why the main results use temperature 0.
 
-![Comparison table](grafikler/5_karsilastirma_en.png)
-![model × category](grafikler/1_model_kategori.png)
-![accuracy vs cost](grafikler/2_maliyet_dogruluk.png)
-![human vs AI](grafikler/3_insan_ai.png)
-![hallucination](grafikler/4_halusinasyon.png)
+### Extra: meaning drift with LLM judges
+
+The code measures **whether** a fact is in the summary. To measure meaning drift, 20 answers were sampled with a seed. Two separate judge models (Claude Sonnet 5.5 and Claude Opus 5.5) scored them 0–2 without seeing each other's scores. Details: [`sonuclar/ozet_hakem.md`](sonuclar/ozet_hakem.md).
+
+| measure | result |
+|---|---|
+| exact agreement between judges (0/1/2) | 16/20 (80%), Cohen's κ = 0.64 |
+| pass/fail agreement between judges | 17/20 (85%) |
+| same decision as the code | 12/20 (Sonnet), 11/20 (Opus) |
+
+The judges agree with each other but only about half the time with the code, because they measure different things. Some summaries the code marked wrong got full marks from the judges (Sonnet 4, Opus 3): a fact is missing, but nothing is false. In 4 summaries the code marked correct, both judges found meaning drift. For example, "the clouds got in the way" became "after the clouds passed", and cameras set up "in case an animal comes" were tied to a different purpose. Code-based scoring cannot catch this kind of error. Human scores are not added yet. Once `insan_puani` is filled in, `scripts/uyum.py` also computes human–judge agreement.
 
 ## Interpretation
 
-The Claude models lead by a wide margin: Sonnet and Opus scored 50/50, Haiku 47/50. Among open models the best are Mistral 7B (37/50) and Aya Expanse 8B (33/50), which was trained for 23 languages including Turkish. The errors fall into two types. Qwen, Gemma, Aya and Llama 3.2 drop facts but almost never invent anything. Llama 3.1 8B and Phi-3.5, on the other hand, write names, numbers and dates that are not in the text; Llama 3.1 got no question right and 54% of its summaries contain something invented. Model size alone does not decide: Llama 3.2 3B (21/50) clearly beat the larger Llama 3.1 8B (0/50). Models that write short summaries drop names first, then dates. Claude keeps 92–94% of the facts, so the test is saturated for Claude; prompt v2 ("at most 20 words") should make it discriminative again. A surprising finding: open models do better on "hard" (difficulty 3) questions. In hard questions the critical fact is the main topic of the paragraph; in easy ones the name sits on the side and is the first thing cut when shortening. In the memorization trap built from real Wikipedia texts (with one fact changed), none of the 10 models wrote the memorized true value. So when the text is in front of them, models follow the text; the real risk is not memorization but invention. The human questions have not been added yet, so the human vs. AI comparison is still pending.
+1. Claude Opus and Sonnet got all 150 questions right, Haiku 147. The test is saturated for the best models. Telling them apart needs a stricter prompt ("at most 20 words") or longer texts.
+2. Among open models, the best are Aya Expanse 8B (77%) and Mistral 7B (71%). Aya is the only model trained for 23 languages including Turkish, which likely explains the gap.
+3. Errors fall into two types. Qwen, Gemma, Aya and Llama 3.2 **drop** facts but almost never invent. Phi-3.5 and Llama 3.1 **invent** numbers and names that are not in the text: 45% of Phi-3.5's summaries and 27% of Llama 3.1's contain invented items.
+4. Model size alone does not decide. Llama 3.2 3B (59%) beat the larger Llama 3.1 8B (6%) and Gemma 2 9B (34%).
+5. Categories differ little. Open models' category averages on the human set range from 50% to 58%. The hardest category is city and transport, the easiest sports and daily life.
+6. The AI-set finding "hard questions are easier" did not repeat on the human set. On the AI set open models did better at level 3; on the human set level 1 is easiest (64%) and levels 2 and 3 are equal (53%). So the first finding depended on how the AI set was written, which is a reason not to generalize from a single set.
+7. AI-written questions were harder (35% vs. 55% for open models), most likely because of text density (see above).
+8. In the memorization trap no model wrote the memorized value. With the text in front of them, models follow the text; the real risk is dropping and inventing facts, not memory.
+9. Code and judges catch different errors. The code sees missing facts, the judges see meaning drift. A reliable summary test should use both.
 
 ## How to run
 
 ```bash
-# 1) put the questions under data/ (hidden; not in the repo, request access on HF)
+cd benchmark
+# 1) put the questions under data/ (hidden; not in this repo, request access on HF)
 python scripts/kontrol.py                 # does the set follow the rules?
 
-# 2) run the models
-export OPENROUTER_API_KEY=sk-or-...
-python scripts/kos.py api --modeller hepsi
-python scripts/kos.py manuel --model gemini-4-carbon-web   # prompt file for a web UI
+# 2) run models
+python scripts/kos.py api --modeller qwen2.5-7b mistral-7b    # Ollama (local)
+export OPENROUTER_API_KEY=...                                 # for API models
+python scripts/kos.py manuel --model <web-model>              # prompt file for a web UI
 
-# 3) score + charts
+# 3) score, charts and table
 python scripts/puanla.py                  # → sonuclar/puanli.csv, sonuclar/ozet.md
 pip install -r requirements.txt
 python scripts/grafik.py                  # → grafikler/*.png
+python scripts/tablo.py                   # → grafikler/5_karsilastirma*.png
+
+# tests (no hidden set needed)
+python scripts/test_ornek.py
 
 # extras
-python scripts/kos.py api --modeller sonnet-5.5 --tekrar 3 --orneklem 20   # repeat / instability
+SICAKLIK=0.7 python scripts/kos.py api --tekrar 3 --orneklem 20   # repeat / instability
 python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20 && python scripts/uyum.py
 ```
 
-All scripts use only the standard library; only `grafik.py` needs matplotlib.
+All scripts use only the standard library, except `grafik.py` and `tablo.py`, which need matplotlib.
 
 ## Limitations
 
-- The name check is heuristic: it looks at capitalized words and can give false positives. Every invention flag is visible in `puanli.csv` and can be checked by hand.
-- If a model writes both the wrong and the right number ("not 34 but 43 million"), the code passes it. I measure this kind of meaning error separately with a judge model.
-- Loss of details other than the 3 critical facts is not measured. This is a faithfulness test, not a summary quality test.
+- The name check is heuristic: it looks at capitalized words and can give false positives. Every flag is visible in `puanli.csv` and can be checked by hand.
+- If a model writes both the wrong and the right number ("not 34 but 43 million"), the code passes it. Meaning errors like this were measured separately with judge models.
+- Temperature could not be set for Claude and Gemini. Open models ran at temperature 0.
+- The human and AI sets use different categories, so compare categories within each set.
+- Loss of details other than the 3 critical facts is not measured. This is a faithfulness test, not a summary-quality test.
 
 ## Files
 
 ```
 data/ornek.csv          format example (real questions are hidden, in .gitignore)
 scripts/ortak.py        prompt, CSV format, Turkish normalization
-scripts/kos.py          runs the models (openrouter / ollama / manual / judge)
-scripts/puanla.py       scoring by code + summary tables
+scripts/kos.py          runs models (ollama / openrouter / manual / judge)
+scripts/puanla.py       code-based scoring + summary tables
 scripts/grafik.py       charts
 scripts/tablo.py        all metrics in one comparison table
-scripts/kontrol.py      checks the question set rules
-scripts/uyum.py         agreement between judge model and human scores
+scripts/kontrol.py      checks the question-set rules
+scripts/test_ornek.py   scorer tests on public examples (runs in CI)
+scripts/uyum.py         judge vs human agreement
+scripts/hf_yukle.py     uploads the hidden set as a gated HF dataset
 modeller.json           model list
-sonuclar/               raw answers and scores
+sonuclar/ozet*.md       score tables (raw answers repeat the paragraphs, so they are not in the repo)
 ```

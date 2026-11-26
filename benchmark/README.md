@@ -5,7 +5,7 @@
 > LLM'ler Türkçe bir paragrafı özetlerken **kritik bilgileri (sayı, tarih, isim) koruyor mu, yoksa uyduruyor mu?**
 
 Sorular gizli (Hugging Face gated dataset), skorlar ve kod açık.
-**HF dataset:** `https://huggingface.co/datasets/<hf-kullanici>/turkce-ozet-halusinasyon` *(erişim istekli)*
+**HF dataset:** [huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon) *(erişim istekli, elle onay)*
 
 ---
 
@@ -23,7 +23,7 @@ Her soru kısa bir Türkçe paragraf. İçinde 3 kritik bilgi var: bir sayı, bi
 | **uydurma sayı/tarih** | özette olup kaynakta olmayan her rakam |
 | **uydurma isim** | cümle ortasında büyük harfle geçen ve kaynakta olmayan özel isim |
 | **doğru** | 3/3 bilgi var **ve** hiç uydurma yok |
-| **anlam kayması** | 20 cevap hakem modele puanlatılır, aynı cevapları ben de puanlarım → uyum oranı |
+| **anlam kayması** | 20 cevap iki ayrı hakem modele (Sonnet 5.5, Opus 5.5) birbirini görmeden puanlatılır → hakem uyumu ve kodla karşılaştırma |
 
 Puanlama ekrandan değil, ham çıktıdan ve kodla yapılır: [`scripts/puanla.py`](scripts/puanla.py).
 
@@ -67,7 +67,7 @@ Her paragraf şu şartları sağlıyor; [`scripts/kontrol.py`](scripts/kontrol.p
 | Paragrafta kritik olmayan ek bilgiler de var (süre, yer, ikinci bir rakam) | modelin neyin önemli olduğunu seçmesi gerekir; ek rakamlar uydurma tespitini de zorlaştırır |
 | Kişi, yer ve kurumlar **kurgusal** | model cevabı ezberinden veremez, sadece metne bakabilir (kontaminasyon önlemi) |
 | Zorluk 3'te bir **tuzak**: düzeltilen rakam, aynı soyadlı iki kişi, dünya bilgisine ters düşen değer, birden çok tarih, yüzde/yüzde puanı | "metne sadakat" ile "genel bilgi" çatıştığında model hangisini seçiyor? |
-| 3 kategori (haber, bilim, spor), 3 zorluk; en az %20'si zorluk 3 | sonuçlar tek bir türe bağlı kalmasın |
+| İnsan setinde 5, AI setinde 3 kategori; 3 zorluk; en az %20'si zorluk 3 | sonuçlar tek bir türe bağlı kalmasın |
 
 ## Özetten ne istedik? (puanlama)
 
@@ -82,152 +82,135 @@ Her paragraf şu şartları sağlıyor; [`scripts/kontrol.py`](scripts/kontrol.p
 
 ## Kategori ve zorluk dağılımı
 
-| | zorluk 1 | zorluk 2 | zorluk 3 | toplam |
-|---|---|---|---|---|
-| haber | | | | |
-| bilim | | | | |
-| spor | | | | |
-| **insan** | | | | **≥100** |
-| **AI** (ayrı etiket) | 15 | 20 | 15 | **50** |
+| set | kategoriler | zorluk 1 | zorluk 2 | zorluk 3 | toplam |
+|---|---|---|---|---|---|
+| **insan** (`kaynak=insan`) | doğa ve çevre · kültür ve sanat · kent ve ulaşım · eğitim ve gözlem · spor ve gündelik yaşam (20'şer) | 20 | 50 | 30 | **100** |
+| **AI** (`kaynak=ai`, ayrı etiket) | haber 17 · bilim 16 · spor 17 | 15 | 20 | 15 | **50** |
 
-**Zorluk 3** soruların tuzağı var: metin içinde düzeltilen rakam ("ilk açıklanan 34 değil, 43"), aynı soyadlı iki kişi, dünya bilgisine ters düşen ama metinde açıkça yazan değer (yüksek rakımda suyun 91 °C'de kaynaması), birden çok tarih, yüzde ile yüzde puanının karışması.
+Zorluk 3 oranı iki sette de %30. **Zorluk 2** paragraflarda çeldirici var: ikinci bir rakam, ikinci bir tarih, ya da kritik olmayan bir isim. **Zorluk 3** paragraflarda tuzak var: metin içinde düzeltilen rakam ("ilk açıklanan 34 değil, 43"), aynı soyadlı iki kişi, dünya bilgisine ters düşen ama metinde açıkça yazan değer (yüksek rakımda suyun 91 °C'de kaynaması), birden çok tarih, yüzde ile yüzde puanının karışması.
 
 Bütün kişi, yer ve kurumlar **kurgusaldır**. Böylece model ezberinden cevap üretemez, sadece metne bakabilir. Bu aynı zamanda kontaminasyona karşı bir önlem.
 
 ## Koşul (her model için aynı)
 
-- İstem `v1` ([`scripts/ortak.py`](scripts/ortak.py)), en fazla 400 token
-- Açık modeller Ollama ile bu bilgisayarda: sistem istemi yok, her soru ayrı ve tek mesaj, sıcaklık 0
-- Claude modelleri Claude Code alt ajanlarıyla: 50 istem tek dosyada verildi, model her birini ayrı cevapladı ama hepsi aynı oturumda yazıldı; sıcaklık ayarlanamadı
-- Web arayüzü kullanılacak modellerde (ChatGPT) her soru için yeni sohbet ve hafıza kapalı
-- Model sürümü, tarih ve erişim yolu `sonuclar.csv`'nin `not`, `tarih`, `erisim` sütunlarında
+- İstem `v1` ([`scripts/ortak.py`](scripts/ortak.py)), sistem istemi yok, örnek yok.
+- **Açık modeller:** Ollama ile yerelde (Apple M4, 16 GB). Her soru ayrı bir mesaj, sıcaklık 0, tohum 42.
+- **Claude modelleri:** Claude Code alt ajanları. Her ajan temiz bağlamla başladı, sadece istem dosyasını okudu, cevap anahtarını görmedi. Sıcaklık ayarlanamadı, süre ölçülmedi.
+- **Gemini 4 Neon:** gemini.google.com web arayüzünde her soru için yeni bir **geçici sohbet**. Sıcaklık ayarlanamadı. Her cevabın tek mesajlık bir sohbetten geldiği ve doğru paragrafa ait olduğu kodla kontrol edildi.
+- Model sürümü, tarih ve erişim yolu her cevabın `not`, `tarih` ve `erisim` sütunlarında kayıtlı.
 
 ## Sonuçlar
 
-*İlk koşu · 21 Kasım 2026 · 50 AI sorusu · istem v1. Claude modelleri Claude Code alt ajanlarıyla, açık modeller Ollama ile (Apple M4, 16 GB, sıcaklık 0) koşuldu. Açık modeller: Qwen 2.5 7B, Llama 3.1 8B, Llama 3.2 3B, Gemma 2 9B, Mistral 7B, Phi-3.5, Aya Expanse 8B. ChatGPT henüz eklenmedi.*
-| model | doğruluk | olgu (3 üzerinden) | uydurma sayı | uydurma isim | sn/soru | $ toplam | n |
-|---|---|---|---|---|---|---|---|
-| aya-expanse-8b | **66%** | 2.62 | 0% | 0% | 7.0 | 0.0000 | 50 |
-| claude-haiku-5.5 | **94%** | 2.94 | 0% | 0% | – | 0.0000 | 50 |
-| claude-opus-5.5 | **100%** | 3.00 | 0% | 0% | – | 0.0000 | 50 |
-| claude-sonnet-5.5 | **100%** | 3.00 | 0% | 0% | – | 0.0000 | 50 |
-| gemma2-9b | **18%** | 1.88 | 0% | 0% | 6.3 | 0.0000 | 50 |
-| llama3.1-8b | **0%** | 0.78 | 46% | 22% | 3.9 | 0.0000 | 50 |
-| llama3.2-3b | **42%** | 2.26 | 0% | 0% | 3.0 | 0.0000 | 50 |
-| mistral-7b | **74%** | 2.72 | 4% | 2% | 10.8 | 0.0000 | 50 |
-| phi3.5-3.8b | **24%** | 2.32 | 48% | 46% | 10.7 | 0.0000 | 50 |
-| qwen2.5-7b | **22%** | 1.98 | 0% | 2% | 4.3 | 0.0000 | 50 |
+*150 soru (100 insan + 50 AI) · istem v1 · 21–26 Kasım 2026. Puanlar ham çıktıdan, kodla.*
 
-### Kategoriye göre doğruluk
+![Karşılaştırma tablosu](grafikler/5_karsilastirma.png)
 
-| model | bilim | haber | spor |
-|---|---|---|---|
-| aya-expanse-8b | 62% | 65% | 71% |
-| claude-haiku-5.5 | 100% | 88% | 94% |
-| claude-opus-5.5 | 100% | 100% | 100% |
-| claude-sonnet-5.5 | 100% | 100% | 100% |
-| gemma2-9b | 19% | 0% | 35% |
-| llama3.1-8b | 0% | 0% | 0% |
-| llama3.2-3b | 31% | 41% | 53% |
-| mistral-7b | 69% | 71% | 82% |
-| phi3.5-3.8b | 31% | 6% | 35% |
-| qwen2.5-7b | 31% | 18% | 18% |
+| # | model | firma | açık ağırlık | doğruluk (150) | insan (100) | AI (50) | olgu / 3 | uydurma içeren özet |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Claude Opus 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
+| 2 | Claude Sonnet 5.5 | Anthropic | | **100%** | 100% | 100% | 3.00 | 0% |
+| 3 | Claude Haiku 5.5 | Anthropic | | **98%** | 100% | 94% | 2.98 | 0% |
+| 4 | Aya Expanse 8B | Cohere | ✓ | **77%** | 83% | 66% | 2.76 | 1% |
+| 5 | Mistral 7B | Mistral AI | ✓ | **71%** | 69% | 74% | 2.68 | 3% |
+| 6 | Llama 3.2 3B | Meta | ✓ | **59%** | 67% | 42% | 2.49 | 0% |
+| 7 | Qwen 2.5 7B | Alibaba | ✓ | **53%** | 68% | 22% | 2.35 | 1% |
+| 8 | Phi-3.5 3.8B | Microsoft | ✓ | **39%** | 46% | 24% | 2.55 | 45% |
+| 9 | Gemma 2 9B | Google | ✓ | **34%** | 42% | 18% | 2.09 | 2% |
+| 10 | Llama 3.1 8B | Meta | ✓ | **6%** | 9% | 0% | 0.97 | 27% |
+| – | Gemini 4 Neon | Google | | *koşu sürüyor* | | | | |
 
-### Zorluğa göre doğruluk
+Kategori ve zorluk kırılımları: [`sonuclar/ozet.md`](sonuclar/ozet.md).
 
-| model | 1 | 2 | 3 |
-|---|---|---|---|
-| aya-expanse-8b | 40% | 65% | 93% |
-| claude-haiku-5.5 | 93% | 90% | 100% |
-| claude-opus-5.5 | 100% | 100% | 100% |
-| claude-sonnet-5.5 | 100% | 100% | 100% |
-| gemma2-9b | 13% | 5% | 40% |
-| llama3.1-8b | 0% | 0% | 0% |
-| llama3.2-3b | 40% | 60% | 20% |
-| mistral-7b | 67% | 70% | 87% |
-| phi3.5-3.8b | 20% | 25% | 27% |
-| qwen2.5-7b | 7% | 15% | 47% |
+### Hangisi daha zor çıktı: insan mı, AI mı?
 
-### İnsan vs AI soruları
+**AI yazımı sorular daha zor çıktı.** Açık modellerin ortalaması insan sorularında %55, AI sorularında %35. Yedi model insan setinde daha iyi yaptı. Claude Opus ve Sonnet iki sette de %100 aldı, Mistral 7B ise tersine AI setinde daha iyi (69% / 74%).
 
-| model | ai |
-|---|---|
-| aya-expanse-8b | 66% |
-| claude-haiku-5.5 | 94% |
-| claude-opus-5.5 | 100% |
-| claude-sonnet-5.5 | 100% |
-| gemma2-9b | 18% |
-| llama3.1-8b | 0% |
-| llama3.2-3b | 42% |
-| mistral-7b | 74% |
-| phi3.5-3.8b | 24% |
-| qwen2.5-7b | 22% |
+Fark büyük ihtimalle yazarın kim olduğundan değil, **metnin yoğunluğundan** geliyor. AI paragrafları daha uzun (ortalama 320 / 282 karakter) ve daha kalabalık: paragraf başına 5,4 sayı ve 4,9 özel isim var, insan setinde 3,8 ve 2,5. Modeller iki sette de yaklaşık aynı uzunlukta özet yazıyor (23–33 kelime). Bu yüzden yoğun metinde aynı kelime bütçesine daha çok bilgi sığdırmaları gerekiyor ve bilgi atlıyorlar. Qwen 2.5 7B'nin bilgi atlama oranı AI setinde %78, insan setinde %32. Yani bu karşılaştırmada "kim yazdı" ile "metin ne kadar yoğun" birbirinden ayrılamıyor.
+
+![insan vs AI](grafikler/3_insan_ai.png)
+![model × kategori, insan](grafikler/1_model_kategori.png)
+![model × kategori, AI](grafikler/1b_model_kategori_ai.png)
+![halüsinasyon](grafikler/4_halusinasyon.png)
+
+### Maliyet ve süre
+
+Bütün koşular ücretsiz: açık modeller yerelde, Claude ve Gemini abonelik arayüzünden. Bu yüzden maliyet yerine **doğru cevap başına süre** gösteriliyor. Açık modellerin süreleri iki koşunun ortalaması. İkinci koşu (insan soruları) başka işlerle eşzamanlı çalıştığı için daha yavaş.
+
+![doğruluk vs süre](grafikler/2_maliyet_dogruluk.png)
 
 ### Deney: gerçek Vikipedi metinleri + ezber tuzağı
 
-25 KPSS konulu Türkçe Vikipedi metni (CC BY-SA 4.0) ve her birinin tek bilgisi değiştirilmiş hâli (`data/deney_vikipedi.csv`, `scripts/vikipedi_seti.py`). Ezber analizi: `python3 scripts/ezber.py`. Sonuç: 10 modelin hiçbiri değiştirilmiş metinde ezberdeki gerçek değeri yazmadı (ezber = 0); hatalar atlama ve uydurma.
-
-| model | doğruluk | olgu (3 üzerinden) | uydurma sayı | uydurma isim | sn/soru | $ toplam | n |
-|---|---|---|---|---|---|---|---|
-| aya-expanse-8b | **40%** | 2.18 | 0% | 4% | 7.5 | 0.0000 | 50 |
-| claude-haiku-5.5 | **74%** | 2.68 | 0% | 0% | – | 0.0000 | 50 |
-| claude-opus-5.5 | **100%** | 3.00 | 0% | 0% | – | 0.0000 | 50 |
-| claude-sonnet-5.5 | **92%** | 2.90 | 0% | 0% | – | 0.0000 | 50 |
-| gemma2-9b | **20%** | 1.64 | 0% | 6% | 7.2 | 0.0000 | 50 |
-| llama3.1-8b | **4%** | 0.62 | 28% | 14% | 4.1 | 0.0000 | 50 |
-| llama3.2-3b | **36%** | 2.06 | 0% | 4% | 3.5 | 0.0000 | 50 |
-| mistral-7b | **46%** | 2.42 | 0% | 8% | 14.6 | 0.0000 | 50 |
-| phi3.5-3.8b | **10%** | 2.00 | 48% | 20% | 9.6 | 0.0000 | 50 |
-| qwen2.5-7b | **22%** | 1.66 | 4% | 2% | 4.3 | 0.0000 | 50 |
+25 KPSS konulu Türkçe Vikipedi metni (CC BY-SA 4.0) ve her birinin tek bilgisi değiştirilmiş hâli kullanıldı (`scripts/vikipedi_seti.py`, ezber analizi `scripts/ezber.py`). Değiştirilmiş metinde 10 modelin hiçbiri ezberdeki gerçek değeri yazmadı (ezber = 0). Hatalar ezberden değil, bilgi atlamaktan ve uydurmaktan geliyor. Sonuçlar: [`sonuclar/ozet_viki.md`](sonuclar/ozet_viki.md).
 
 ### Ek: tekrar kararsızlığı
 
-Aya Expanse 8B ve Llama 3.2 3B, aynı 20 soruyu (dengeli örneklem, tohum 42) **sıcaklık 0.7** ile 3'er kez çözdü (`SICAKLIK=0.7 python3 scripts/kos.py api --tekrar 3 --orneklem 20`).
+Aya Expanse 8B ve Llama 3.2 3B, aynı 20 soruyu (dengeli örneklem, tohum 42) **sıcaklık 0.7** ile 3'er kez çözdü.
 
 | model | deneme 1 / 2 / 3 doğru | sonucu değişen soru | kararsızlık |
 |---|---|---|---|
-| aya-expanse-8b | 13 / 13 / 13 (20 üzerinden) | 7 | %35 |
-| llama3.2-3b | 9 / 11 / 11 | 13 | %65 |
+| Aya Expanse 8B | 13 / 13 / 13 (20 üzerinden) | 7 | %35 |
+| Llama 3.2 3B | 9 / 11 / 11 | 13 | %65 |
 
-Aya'nın toplam skoru üç denemede de aynı (13/20), ama **hangi** soruları doğru yaptığı 7 soruda değişiyor. Tek bir koşunun skoru sabit görünse bile soru düzeyinde sonuç şansa bağlı. Bu yüzden ana sonuçlar sıcaklık 0 ile alındı ve tek koşu, tek ölçüm olarak okunmamalı.
+Aya'nın toplam skoru üç denemede de aynı, ama **hangi** soruları doğru yaptığı 7 soruda değişiyor. Bu yüzden ana sonuçlar sıcaklık 0 ile alındı.
 
-![Karşılaştırma tablosu](grafikler/5_karsilastirma.png)
-![model × kategori](grafikler/1_model_kategori.png)
-![doğruluk vs maliyet](grafikler/2_maliyet_dogruluk.png)
-![insan vs AI](grafikler/3_insan_ai.png)
-![halüsinasyon](grafikler/4_halusinasyon.png)
+### Ek: hakem modeli ile anlam kayması
+
+Kod, bilginin özette **olup olmadığını** ölçüyor. Anlamın kayıp kaymadığını ölçmek için 20 cevap tohumla seçildi. İki ayrı hakem model (Claude Sonnet 5.5 ve Claude Opus 5.5), birbirinin puanını görmeden bu cevapları 0–2 arası puanladı. Ayrıntı: [`sonuclar/ozet_hakem.md`](sonuclar/ozet_hakem.md).
+
+| ölçüm | sonuç |
+|---|---|
+| iki hakem tam uyum (0/1/2) | 16/20 (%80), Cohen κ = 0.64 |
+| iki hakem geçti/kaldı uyumu | 17/20 (%85) |
+| kod ile hakem aynı karar | 12/20 (Sonnet), 11/20 (Opus) |
+
+Hakemler birbiriyle uyuşuyor ama kodla ancak yarı yarıya uyuşuyor, çünkü farklı şeyleri ölçüyorlar. Kodun "yanlış" dediği özetlerin bir kısmına hakemler tam puan verdi (Sonnet 4, Opus 3): bu özetlerde bilgi eksik ama yanlış bir şey yok. Kodun "doğru" dediği 4 özette ise iki hakem de anlam kayması buldu. Örneğin "bulutlar araya girdi" ifadesi "bulutlar geçtikten sonra" olmuş, "hayvan gelirse diye kurulan kameralar" ise başka bir amaca bağlanmış. Bu, kod tabanlı puanlamanın yakalayamadığı bir hata türü. İnsan puanı henüz eklenmedi; `insan_puani` doldurulunca `scripts/uyum.py` insan ile hakem arasındaki uyumu da hesaplar.
 
 ## Yorum
 
-Claude modelleri açık farkla önde: Sonnet ve Opus 50/50, Haiku 47/50 yaptı. Açık modellerde en iyiler Mistral 7B (37/50) ve Türkçe dahil 23 dil için eğitilmiş Aya Expanse 8B (33/50). Hatalar iki türe ayrılıyor. Qwen, Gemma, Aya ve Llama 3.2 bilgiyi atlıyor ama neredeyse hiç uydurmuyor. Llama 3.1 8B ve Phi-3.5 ise metinde olmayan isim, rakam ve tarih yazıyor; Llama 3.1 hiçbir soruyu doğru yapamadı ve özetlerinin %54'ünde uydurma var. Model boyutu tek başına belirleyici değil: Llama 3.2 3B (21/50), kendinden büyük Llama 3.1 8B'yi (0/50) açık ara geçti. Kısa özet yazan modeller önce isimleri, sonra tarihleri atıyor. Claude ise metnin %92–94'ünü koruyor, yani test Claude için doymuş durumda; istem v2 ("en fazla 20 kelime") ile yeniden ayırt edici hale getirilmeli. Şaşırtıcı bulgu: açık modeller "zor" (z3) sorularda daha başarılı. Zor sorularda kritik bilgi paragrafın ana konusu; kolay sorularda isim kenarda kalıyor ve kısaltırken ilk o atılıyor. Gerçek Vikipedi metinleriyle kurulan ezber tuzağında (bilgiyi değiştirilmiş metin) 10 modelin hiçbiri ezberdeki doğru değeri yazmadı. Yani metin önündeyken modeller metne uyuyor; asıl risk ezber değil, uydurma. İnsan soruları henüz eklenmediği için insan ve AI karşılaştırması bekliyor.
+1. Claude Opus ve Sonnet 150 sorunun hepsini doğru yaptı, Haiku 147'sini. Bu test en iyi modeller için doymuş durumda. Onları ayırmak için daha sıkı bir istem ("en fazla 20 kelime") ya da daha uzun metinler gerekiyor.
+2. Açık modellerde en iyiler Aya Expanse 8B (%77) ve Mistral 7B (%71). Aya, Türkçe dahil 23 dil için eğitilmiş tek model ve fark muhtemelen buradan geliyor.
+3. Hatalar iki türe ayrılıyor. Qwen, Gemma, Aya ve Llama 3.2 bilgiyi **atlıyor** ama neredeyse hiç uydurmuyor. Phi-3.5 ve Llama 3.1 ise metinde olmayan sayı ve isim **uyduruyor**: Phi-3.5 özetlerinin %45'inde, Llama 3.1'in %27'sinde uydurma var.
+4. Model boyutu tek başına belirleyici değil. Llama 3.2 3B (%59), kendinden büyük Llama 3.1 8B'yi (%6) ve Gemma 2 9B'yi (%34) geçti.
+5. Kategoriler arasında büyük fark yok. Açık modellerin insan setindeki kategori ortalamaları %50 ile %58 arasında. En zor kategori kent ve ulaşım, en kolayı spor ve gündelik yaşam.
+6. AI setindeki "zor sorular daha kolay" bulgusu insan setinde tekrar etmedi. AI setinde açık modeller zorluk 3'te daha iyiydi; insan setinde zorluk 1 en kolay (%64), zorluk 2 ve 3 eşit (%53). Yani ilk bulgu AI setinin yazımına bağlıydı. Tek bir set üzerinden genelleme yapmamak gerektiğini gösteriyor.
+7. AI yazımı sorular daha zor çıktı (açık modeller %35, insan sorularında %55). Bunun sebebi büyük ihtimalle metin yoğunluğu (yukarıdaki bölüm).
+8. Ezber tuzağında hiçbir model ezberdeki değeri yazmadı. Metin önündeyken modeller metne uyuyor; asıl risk ezber değil, bilgiyi atlamak ve uydurmak.
+9. Kod ve hakem farklı hataları yakalıyor. Kod eksik bilgiyi, hakem anlam kaymasını görüyor. Güvenilir bir özet testi için ikisi birlikte kullanılmalı.
 
 ## Nasıl koşulur
 
 ```bash
+cd benchmark
 # 1) soruları data/ altına koy (gizli; repoda yok, HF'ten erişim iste)
 python scripts/kontrol.py                 # set kurallara uyuyor mu?
 
 # 2) modelleri koş
-export OPENROUTER_API_KEY=sk-or-...
-python scripts/kos.py api --modeller hepsi
-python scripts/kos.py manuel --model gemini-4-carbon-web   # web arayüzü için istem dosyası
+python scripts/kos.py api --modeller qwen2.5-7b mistral-7b    # Ollama (yerel)
+export OPENROUTER_API_KEY=...                                 # API ile koşulacak modeller için
+python scripts/kos.py manuel --model <web-modeli>             # web arayüzü için istem dosyası
 
-# 3) puanla + grafik
+# 3) puanla, grafik ve tablo
 python scripts/puanla.py                  # → sonuclar/puanli.csv, sonuclar/ozet.md
 pip install -r requirements.txt
 python scripts/grafik.py                  # → grafikler/*.png
+python scripts/tablo.py                   # → grafikler/5_karsilastirma*.png
+
+# testler (gizli set gerekmez)
+python scripts/test_ornek.py
 
 # ekler
-python scripts/kos.py api --modeller sonnet-5.5 --tekrar 3 --orneklem 20   # tekrar / kararsızlık
+SICAKLIK=0.7 python scripts/kos.py api --tekrar 3 --orneklem 20   # tekrar / kararsızlık
 python scripts/kos.py hakem --hakem-model sonnet-5.5 --n 20 && python scripts/uyum.py
 ```
 
-Betiklerin hepsi standart kütüphaneyle çalışır, yalnızca `grafik.py` matplotlib ister.
+Betiklerin hepsi standart kütüphaneyle çalışır. Sadece `grafik.py` ve `tablo.py` matplotlib ister.
 
 ## Sınırlamalar
 
-- İsim kontrolü sezgisel: büyük harfle başlayan kelimeye bakar, yanlış pozitif verebilir. `puanli.csv`'de her uydurma işareti görünür ve elle kontrol edilebilir.
-- Model hem yanlış hem doğru rakamı yazarsa ("34 değil 43 milyon") kod geçer verir. Bu tür anlam hatalarını hakem modelle ayrıca ölçüyorum.
+- İsim kontrolü sezgisel: büyük harfle başlayan kelimelere bakıyor ve yanlış pozitif verebilir. `puanli.csv`'de her uydurma işareti görünüyor, elle kontrol edilebilir.
+- Model hem yanlış hem doğru rakamı yazarsa ("34 değil 43 milyon") kod geçer veriyor. Bu tür anlam hataları hakem modelle ayrıca ölçüldü.
+- Claude ve Gemini'de sıcaklık ayarlanamadı. Açık modeller sıcaklık 0 ile koşuldu.
+- İnsan ve AI setlerinin kategorileri farklı. Kategori karşılaştırması her set kendi içinde yapılmalı.
 - 3 kritik bilgi dışındaki ayrıntıların kaybı ölçülmüyor. Bu bir sadakat testi, özet kalitesi testi değil.
 
 ## Dosyalar
@@ -235,12 +218,14 @@ Betiklerin hepsi standart kütüphaneyle çalışır, yalnızca `grafik.py` matp
 ```
 data/ornek.csv          biçim örneği (gerçek sorular gizli, .gitignore'da)
 scripts/ortak.py        istem, CSV biçimi, Türkçe normalleştirme
-scripts/kos.py          modelleri koşar (openrouter / ollama / manuel / hakem)
+scripts/kos.py          modelleri koşar (ollama / openrouter / manuel / hakem)
 scripts/puanla.py       kodla puanlama + özet tablolar
 scripts/grafik.py       grafikler
 scripts/tablo.py        bütün ölçümler tek karşılaştırma tablosunda
 scripts/kontrol.py      soru seti kurallarını denetler
-scripts/uyum.py         hakem model ile insan puanının uyumu
+scripts/test_ornek.py   puanlayıcı testleri (herkese açık örneklerle, CI'da çalışır)
+scripts/uyum.py         hakem ile insan puanının uyumu
+scripts/hf_yukle.py     gizli seti gated HF dataset olarak yükler
 modeller.json           model listesi
-sonuclar/               ham cevaplar ve puanlar
+sonuclar/ozet*.md       skor tabloları (ham cevaplar paragrafları tekrar ettiği için repoda yok)
 ```

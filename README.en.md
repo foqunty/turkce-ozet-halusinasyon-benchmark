@@ -6,18 +6,23 @@ When an LLM summarizes a Turkish paragraph, **does it keep the number, the date 
 
 Each question is a Turkish paragraph with 3 critical facts (a number, a date, a name). A summary counts as correct only if it keeps all three facts and contains no number or name that is not in the source.
 
-| model | correct (out of 50) |
-|---|---|
-| Claude Opus 5.5 | 50 |
-| Claude Sonnet 5.5 | 50 |
-| Claude Haiku 5.5 | 47 |
-| Mistral 7B | 37 |
-| Aya Expanse 8B | 33 |
-| Llama 3.2 3B | 21 |
-| Phi-3.5 3.8B | 12 |
-| Qwen 2.5 7B | 11 |
-| Gemma 2 9B | 9 |
-| Llama 3.1 8B | 0 |
+| model | accuracy (150) | human-written (100) | AI-written (50) |
+|---|---|---|---|
+| Claude Opus 5.5 | **100%** | 100% | 100% |
+| Claude Sonnet 5.5 | **100%** | 100% | 100% |
+| Claude Haiku 5.5 | **98%** | 100% | 94% |
+| Aya Expanse 8B | **77%** | 83% | 66% |
+| Mistral 7B | **71%** | 69% | 74% |
+| Llama 3.2 3B | **59%** | 67% | 42% |
+| Qwen 2.5 7B | **53%** | 68% | 22% |
+| Phi-3.5 3.8B | **39%** | 46% | 24% |
+| Gemma 2 9B | **34%** | 42% | 18% |
+| Llama 3.1 8B | **6%** | 9% | 0% |
+| Gemini 4 Neon | *run in progress* | | |
+
+150 fictional paragraphs (100 human-written, 50 AI-written) · prompt v1 · open models via Ollama on an Apple M4, temperature 0. **AI-written questions turned out harder**: open models average 55% on human questions and 35% on AI questions.
+
+Hidden question set: [Hugging Face, gated](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon)
 
 ![Comparison table](benchmark/grafikler/5_karsilastirma_en.png)
 
@@ -65,7 +70,7 @@ Every paragraph meets these rules; [`scripts/kontrol.py`](benchmark/scripts/kont
 | The paragraph also has non-critical details (duration, place, a second number) | the model has to pick what is important; extra numbers also make invented ones harder to spot |
 | People, places and organizations are **fictional** | the model cannot answer from memory, only from the text (contamination guard) |
 | Difficulty 3 has a **trap**: a corrected number, two people with the same surname, a value that contradicts world knowledge, several dates, percent vs. percentage point | when "faithful to the text" and "general knowledge" clash, which one does the model choose? |
-| 3 categories (news, science, sports), 3 difficulty levels; at least 20% difficulty 3 | results should not depend on one type of text |
+| 5 categories in the human set, 3 in the AI set; 3 difficulty levels; at least 20% difficulty 3 | results should not depend on one type of text |
 
 ## What did we require from the summary? (scoring)
 
@@ -80,6 +85,8 @@ Length and style of the summary are not scored. The only thing measured is wheth
 
 ## More
 
-Method, charts, the memorization-trap experiment and the interpretation: **[benchmark/README.en.md](benchmark/README.en.md)**
+Method, human vs AI comparison, charts, the memorization trap, the LLM-judge experiment and the interpretation: **[benchmark/README.en.md](benchmark/README.en.md)**
 
-The question set and answer key are kept hidden (so they do not leak into model training) and are not in this repo.
+The question set and answer key are kept hidden (so they do not leak into model training) and are not in this repo. Access: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
+
+License: code MIT, dataset CC BY-NC 4.0.

@@ -6,18 +6,23 @@ LLM'ler Türkçe bir paragrafı özetlerken **sayıyı, tarihi ve ismi koruyor m
 
 Her soru, içinde 3 kritik bilgi (sayı, tarih, isim) olan bir Türkçe paragraf. Özet ancak üç bilgiyi de koruyor ve kaynakta olmayan hiçbir rakam ya da isim içermiyorsa doğru sayılıyor.
 
-| model | doğru (50) |
-|---|---|
-| Claude Opus 5.5 | 50 |
-| Claude Sonnet 5.5 | 50 |
-| Claude Haiku 5.5 | 47 |
-| Mistral 7B | 37 |
-| Aya Expanse 8B | 33 |
-| Llama 3.2 3B | 21 |
-| Phi-3.5 3.8B | 12 |
-| Qwen 2.5 7B | 11 |
-| Gemma 2 9B | 9 |
-| Llama 3.1 8B | 0 |
+| model | doğruluk (150) | insan yazımı (100) | AI yazımı (50) |
+|---|---|---|---|
+| Claude Opus 5.5 | **100%** | 100% | 100% |
+| Claude Sonnet 5.5 | **100%** | 100% | 100% |
+| Claude Haiku 5.5 | **98%** | 100% | 94% |
+| Aya Expanse 8B | **77%** | 83% | 66% |
+| Mistral 7B | **71%** | 69% | 74% |
+| Llama 3.2 3B | **59%** | 67% | 42% |
+| Qwen 2.5 7B | **53%** | 68% | 22% |
+| Phi-3.5 3.8B | **39%** | 46% | 24% |
+| Gemma 2 9B | **34%** | 42% | 18% |
+| Llama 3.1 8B | **6%** | 9% | 0% |
+| Gemini 4 Neon | *koşu sürüyor* | | |
+
+150 kurgusal paragraf (100 insan yazımı, 50 AI yazımı) · istem v1 · açık modeller Ollama ile Apple M4'te, sıcaklık 0. **AI yazımı sorular daha zor çıktı**: açık modellerin ortalaması insan sorularında %55, AI sorularında %35.
+
+Gizli soru seti: [Hugging Face, erişim istekli](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon)
 
 ![Karşılaştırma tablosu](benchmark/grafikler/5_karsilastirma.png)
 
@@ -61,7 +66,7 @@ Her paragraf şu şartları sağlıyor; [`scripts/kontrol.py`](benchmark/scripts
 | Paragrafta kritik olmayan ek bilgiler de var (süre, yer, ikinci bir rakam) | modelin neyin önemli olduğunu seçmesi gerekir; ek rakamlar uydurma tespitini de zorlaştırır |
 | Kişi, yer ve kurumlar **kurgusal** | model cevabı ezberinden veremez, sadece metne bakabilir (kontaminasyon önlemi) |
 | Zorluk 3'te bir **tuzak**: düzeltilen rakam, aynı soyadlı iki kişi, dünya bilgisine ters düşen değer, birden çok tarih, yüzde/yüzde puanı | "metne sadakat" ile "genel bilgi" çatıştığında model hangisini seçiyor? |
-| 3 kategori (haber, bilim, spor), 3 zorluk; en az %20'si zorluk 3 | sonuçlar tek bir türe bağlı kalmasın |
+| İnsan setinde 5, AI setinde 3 kategori; 3 zorluk; en az %20'si zorluk 3 | sonuçlar tek bir türe bağlı kalmasın |
 
 ## Özetten ne istedik? (puanlama)
 
@@ -76,6 +81,8 @@ Her paragraf şu şartları sağlıyor; [`scripts/kontrol.py`](benchmark/scripts
 
 ## Daha fazlası
 
-Yöntem, grafikler, ezber tuzağı deneyi ve yorum: **[benchmark/README.md](benchmark/README.md)**
+Yöntem, insan/AI karşılaştırması, grafikler, ezber tuzağı, hakem modeli deneyi ve yorum: **[benchmark/README.md](benchmark/README.md)**
 
-Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), bu repoda yok.
+Soru seti ve cevap anahtarı gizli tutuluyor (model eğitimine sızmasın diye), bu repoda yok. Erişim için: [Hugging Face](https://huggingface.co/datasets/foqunty/turkce-ozet-halusinasyon).
+
+Lisans: kod MIT, veri seti CC BY-NC 4.0.

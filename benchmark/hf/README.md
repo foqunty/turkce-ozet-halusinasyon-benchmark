@@ -34,8 +34,8 @@ Akıcı bir özet her zaman doğru bir özet değildir. Bu set, Türkçe metinde
 
 | sütun | açıklama |
 |---|---|
-| `id` | `oz-001` (insan), `ozai-001` (AI) |
-| `kategori` | haber · bilim · spor |
+| `id` | `A3-K001` (insan), `ozai-001` (AI) |
+| `kategori` | insan seti: doğa ve çevre · kültür ve sanat · kent ve ulaşım · eğitim ve gözlem · spor ve gündelik yaşam; AI seti: haber · bilim · spor |
 | `zorluk` | 1–3 |
 | `kaynak` | `insan` (elle yazıldı) / `ai` (model üretti, elle kontrol edildi) |
 | `soru` | özetlenecek paragraf |
@@ -48,16 +48,33 @@ Akıcı bir özet her zaman doğru bir özet değildir. Bu set, Türkçe metinde
 
 | | z1 | z2 | z3 | toplam |
 |---|---|---|---|---|
-| insan | | | | |
+| insan | 20 | 50 | 30 | 100 |
 | ai | 15 | 20 | 15 | 50 |
+| toplam | 35 | 70 | 45 | 150 |
+
+İnsan setinde her kategoride 20 soru var; AI setinde haber 17, spor 17, bilim 16. Zorluk 3 oranı: insan %30, AI %30.
 
 ## Puanlama
 
-Bir özet ancak **3 bilginin üçü de doğru geçiyorsa ve kaynakta olmayan hiçbir sayı, tarih ya da isim içermiyorsa** doğru sayılır. Kod: `<github-repo-linki>/scripts/puanla.py`
+Bir özet ancak **3 bilginin üçü de doğru geçiyorsa ve kaynakta olmayan hiçbir sayı, tarih ya da isim içermiyorsa** doğru sayılır. Kod: [github.com/foqunty/turkce-ozet-halusinasyon-benchmark](https://github.com/foqunty/turkce-ozet-halusinasyon-benchmark) (`benchmark/scripts/puanla.py`)
 
 ## Skor tablosu
 
-*(model × kategori tablosunu buraya ekle)*
+| model | insan (100) | AI (50) | genel (150) |
+|---|---|---|---|
+| Claude Opus 5.5 | 100% | 100% | 100% |
+| Claude Sonnet 5.5 | 100% | 100% | 100% |
+| Claude Haiku 5.5 | 100% | 94% | 98% |
+| Aya Expanse 8B | 83% | 66% | 77% |
+| Mistral 7B | 69% | 74% | 71% |
+| Qwen 2.5 7B | 68% | 22% | 53% |
+| Llama 3.2 3B | 67% | 42% | 59% |
+| Phi-3.5 3.8B | 46% | 24% | 39% |
+| Gemma 2 9B | 42% | 18% | 34% |
+| Llama 3.1 8B | 9% | 0% | 6% |
+
+İstem v1, sıcaklık 0. Açık modeller Ollama ile Apple M4 16 GB üzerinde koşuldu. Ayrıntılı model × kategori tabloları ve grafikler GitHub reposunda.
+
 
 ## Lisans ve sınırlamalar
 
@@ -65,4 +82,4 @@ CC BY-NC 4.0. Küçük bir set (≈150 soru), tek bir istem ve sıcaklık 0 ile 
 
 ## Atıf
 
-Sedat Çoban, 2025.
+Sedat Çoban, 2026.
